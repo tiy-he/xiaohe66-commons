@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xiaohe66.common.model.Result;
+import com.xiaohe66.common.reflect.ParamType;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * 数据格式处理类
@@ -56,5 +59,16 @@ public class JsonUtils {
 
     public static <T> T formatObject(String jsonStr, Type type) {
         return gson.fromJson(jsonStr, type);
+    }
+
+    public static <T> Result<T> formatResult(String reader, Class<T> cls) {
+        Type type = new ParamType(Result.class, cls);
+        return gson.fromJson(reader, type);
+    }
+
+    public static <T> Result<List<T>> formatResultList(String reader, Class<T> cls) {
+        Type listType = new ParamType(List.class, cls);
+        Type type = new ParamType(Result.class, listType);
+        return gson.fromJson(reader, type);
     }
 }

@@ -1,12 +1,12 @@
 package com.xiaohe66.common.model;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
  * @author xiaohe
  * @time 17-10-31 031
  */
-@Getter
+@Data
 public class Result<T> {
 
     private int code;
