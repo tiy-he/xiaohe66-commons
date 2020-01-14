@@ -66,6 +66,11 @@ public class JsonUtils {
         return gson.fromJson(reader, type);
     }
 
+    public static <T> Result<T> formatResult(String reader, Type type) {
+        Type resultType = new ParamType(Result.class, type);
+        return gson.fromJson(reader, resultType);
+    }
+
     public static <T> Result<List<T>> formatResultList(String reader, Class<T> cls) {
         Type listType = new ParamType(List.class, cls);
         Type type = new ParamType(Result.class, listType);
