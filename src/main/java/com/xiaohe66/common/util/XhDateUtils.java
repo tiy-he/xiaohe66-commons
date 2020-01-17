@@ -1,4 +1,4 @@
-package com.xiaohe66.common.utils;
+package com.xiaohe66.common.util;
 
 import org.apache.commons.lang3.time.DateUtils;
 
