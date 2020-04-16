@@ -52,7 +52,11 @@ public abstract class AbstractExcelReader implements TableImportReader {
 
         @Override
         public void onNextRow(ParserContext parserContext, List<Object> data) {
-            sourceDataList.add(data);
+            if (parserContext.getCurrentRowIndex() == 0) {
+                readerContext.setTableTitleList(data);
+            } else {
+                sourceDataList.add(data);
+            }
         }
 
         @Override
@@ -72,14 +76,21 @@ public abstract class AbstractExcelReader implements TableImportReader {
         @Override
         public void onNextRow(ParserContext parserContext, List<Object> data) {
 
-            sourceDataList.add(data);
+            if (parserContext.getCurrentRowIndex() == 0) {
 
-            if (sourceDataList.size() >= readerContext.getReadQtyOnce()) {
-                List<List<Object>> dataList = convertDbData(readerContext, sourceDataList);
-                Table table = new Table(parserContext.getSheetName(), this.sourceDataList, dataList);
-                consumer.accept(table);
-                sourceDataList = new ArrayList<>();
+                readerContext.setTableTitleList(data);
+
+            } else {
+                sourceDataList.add(data);
+
+                if (sourceDataList.size() >= readerContext.getReadQtyOnce()) {
+                    List<List<Object>> dataList = convertDbData(readerContext, sourceDataList);
+                    Table table = new Table(parserContext.getSheetName(), this.sourceDataList, dataList);
+                    consumer.accept(table);
+                    sourceDataList = new ArrayList<>();
+                }
             }
+
         }
 
         @Override

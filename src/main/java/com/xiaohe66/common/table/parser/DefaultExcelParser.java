@@ -38,14 +38,10 @@ public class DefaultExcelParser extends AbstractTableParser {
 
             context.setSheetName(sheet.getSheetName());
 
-            // callback title
-            Row row = sheet.getRow(0);
-            List<Object> data = readRow(row, cellQty);
-            context.setCurrentRowIndex(0);
-            callback.onNextTitle(context, data);
-
+            Row row;
+            List<Object> data;
             // callback row
-            for (int i = 1; i < rowQty; i++) {
+            for (int i = 0; i < rowQty; i++) {
 
                 row = sheet.getRow(i);
 

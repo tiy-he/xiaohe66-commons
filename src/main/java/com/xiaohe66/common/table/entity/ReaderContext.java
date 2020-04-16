@@ -35,6 +35,10 @@ public class ReaderContext {
     @Setter
     private List<Object> tableTitleList;
 
+    @Getter
+    @Setter
+    private List<Object> configTitleList;
+
     /**
      * 用于读取器临时缓存数据
      */

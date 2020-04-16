@@ -71,7 +71,6 @@ public class ExcelImportTest {
 
     @Test
     public void test() {
-        importer.addConfig("testConfig", config);
-        importer.importWithFile(file, "testConfig", "otherParam");
+        importer.importWithFile(file, config, "otherParam");
     }
 }

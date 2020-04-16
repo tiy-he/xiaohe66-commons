@@ -38,6 +38,9 @@ public class TableTitleReaderTest {
 
     DbHandler dbHandler;
 
+    TableConfig config1;
+    TableConfig config2;
+
     @Before
     public void before() {
         ClassLoader classLoader = this.getClass().getClassLoader();
@@ -66,7 +69,7 @@ public class TableTitleReaderTest {
             }
         };
 
-        TableConfig config = TableConfig.builder()
+        config1 = TableConfig.builder()
                 .fieldList(fieldList)
                 .insertType(SqlBuilder.InsertType.EXIST_IGNORE)
                 .reader(reader)
@@ -76,9 +79,7 @@ public class TableTitleReaderTest {
                 .dbHandler(dbHandler)
                 .build();
 
-        tableImporter.addConfig("config1", config);
-
-        config = TableConfig.builder()
+        config2 = TableConfig.builder()
                 .fieldList(fieldList)
                 .insertType(SqlBuilder.InsertType.EXIST_IGNORE)
                 .reader(reader)
@@ -87,21 +88,19 @@ public class TableTitleReaderTest {
                 .sqlBuilder(sqlBuilder)
                 .dbHandler(dbHandler)
                 .build();
-
-        tableImporter.addConfig("config2", config);
     }
 
     @Test
     public void test1() {
 
-        tableImporter.importWithFile(file, "config1", null);
+        tableImporter.importWithFile(file, config1, null);
 
     }
 
     @Test
     public void test2() {
 
-        tableImporter.importWithFile(file, "config2", null);
+        tableImporter.importWithFile(file, config2, null);
 
     }
 }

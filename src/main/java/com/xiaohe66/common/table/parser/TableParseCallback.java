@@ -11,18 +11,19 @@ import java.util.List;
 public interface TableParseCallback {
 
     /**
-     * 回调标题
+     * 开始时回调
      *
      * @param parserContext 上下文
-     * @param data    标题数据
      */
-    void onNextTitle(ParserContext parserContext, List<Object> data);
+    default void onStart(ParserContext parserContext) {
+
+    }
 
     /**
      * 下一行
      *
      * @param parserContext 上下文
-     * @param data    行数据
+     * @param data          行数据
      */
     void onNextRow(ParserContext parserContext, List<Object> data);
 

@@ -31,9 +31,9 @@ public class TableTitleExcelReader extends AbstractExcelReader {
 
         int[] columnArr = checkAndGetIndex(context);
 
-        if (log.isDebugEnabled()) {
-            log.debug("表头 : {}", context.getTableTitleList());
-            log.debug("读取到的下标 : {}", Arrays.toString(columnArr));
+        if (log.isInfoEnabled()) {
+            log.info("Excel文件中的表头 : {}", context.getTableTitleList());
+            log.info("数据库数据所对应的下标 : {}", Arrays.toString(columnArr));
         }
 
         int rowQty = sourceDataList.size();
@@ -41,15 +41,20 @@ public class TableTitleExcelReader extends AbstractExcelReader {
 
         for (List<Object> row : sourceDataList) {
 
-            List<Object> data = doConvertDbData(row, columnArr, context.getFieldList());
+            List<Object> data = doConvertDbData(row, context, columnArr);
 
-            dataList.add(data);
+            if (data != null) {
+                dataList.add(data);
+            }
+
         }
 
         return dataList;
     }
 
-    protected List<Object> doConvertDbData(List<Object> row, int[] columnArr, List<TableField> fieldList) {
+    protected List<Object> doConvertDbData(List<Object> row, ReaderContext context, int[] columnArr) {
+
+        List<TableField> fieldList = context.getFieldList();
 
         List<Object> data = new ArrayList<>(columnArr.length);
         for (int i = 0; i < columnArr.length; i++) {
@@ -68,12 +73,17 @@ public class TableTitleExcelReader extends AbstractExcelReader {
             }
 
             if (value == null) {
-                if (field.getDefVal() != null) {
+
+                if (field.isRequire()) {
+                    log.info("字段{}缺少必填项, data : {}", field.getFieldName(), row);
+                    return null;
+
+                } else if (field.getDefVal() != null) {
                     value = field.getDefVal();
 
                 } else if (field.getValueCreator() != null) {
                     try {
-                        value = field.getValueCreator().apply(row, columnArr);
+                        value = field.getValueCreator().apply(context, row);
                     } catch (Exception e) {
                         log.error("数据生成器调用时发生异常, msg : {}", e.getMessage());
                         log.debug("数据生成器调用时发生异常, msg : {}", e.getMessage(), e);
@@ -81,13 +91,14 @@ public class TableTitleExcelReader extends AbstractExcelReader {
                 }
             }
 
+            // todo : 正则校验
+
             data.add(value);
         }
         return data;
     }
 
     protected int[] checkAndGetIndex(ReaderContext context) {
-
 
         int[] indexArr = context.cache("indexArr");
         if (indexArr != null) {
@@ -100,12 +111,14 @@ public class TableTitleExcelReader extends AbstractExcelReader {
         indexArr = new int[fieldList.size()];
         context.cache("indexArr", indexArr);
 
-        List<String> lockTitleList = new ArrayList<>();
+        List<String> missingTitleList = new ArrayList<>();
+        List<Object> configTitleList = new ArrayList<>(fieldList.size());
 
         for (int i = 0, n = fieldList.size(); i < n; i++) {
             TableField field = fieldList.get(i);
 
             String title = field.getTableTitle();
+            configTitleList.add(title);
 
             if (title == null) {
                 indexArr[i] = -1;
@@ -124,16 +137,17 @@ public class TableTitleExcelReader extends AbstractExcelReader {
 
                 // 必填项缺失，记录缺失的表头
                 if (field.isRequire()) {
-                    lockTitleList.add(title);
+                    missingTitleList.add(title);
                 }
             }
         }
 
-        if (!lockTitleList.isEmpty()) {
-            String msg = lockTitleList.toString();
+        if (!missingTitleList.isEmpty()) {
+            String msg = missingTitleList.toString();
             log.error("表格格式错误，缺少表头 : {}", msg);
             throw new TableImportExcelFormatException(msg);
         }
+        context.setConfigTitleList(configTitleList);
 
         return indexArr;
     }

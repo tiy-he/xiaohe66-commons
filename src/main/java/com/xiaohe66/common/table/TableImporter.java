@@ -8,8 +8,6 @@ import com.xiaohe66.common.table.sqlbuilder.SqlBuilder;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author xiaohe
@@ -19,19 +17,18 @@ public class TableImporter {
 
     private static TableImporter tableImporter = new TableImporter();
 
-    private final Map<String, TableConfig> configMap;
-
     private TableImporter() {
-        this.configMap = new HashMap<>();
     }
 
     public static TableImporter getInstance() {
         return tableImporter;
     }
 
-    public void importWithFile(File file, String configName, Object otherParam) {
+    public void importWithFile(File file, TableConfig config) {
+        importWithFile(file, config, null);
+    }
 
-        TableConfig config = configMap.get(configName);
+    public void importWithFile(File file, TableConfig config, Object otherParam) {
 
         TableImportReader reader = config.getReader();
         SqlBuilder sqlBuilder = config.getSqlBuilder();
@@ -48,14 +45,6 @@ public class TableImporter {
         } catch (IOException e) {
             throw new TableImportException(e);
         }
-    }
-
-    public boolean isExist(String configName) {
-        return configMap.containsKey(configName);
-    }
-
-    public void addConfig(String configName, TableConfig config) {
-        configMap.put(configName, config);
     }
 
 }

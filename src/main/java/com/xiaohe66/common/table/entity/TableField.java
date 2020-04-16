@@ -22,5 +22,5 @@ public class TableField {
     private String regex;
     private Object defVal;
     private TableFieldVerifier verifyer;
-    private BiFunction<List<Object>, int[], Object> valueCreator;
+    private BiFunction<ReaderContext, List<Object>, Object> valueCreator;
 }

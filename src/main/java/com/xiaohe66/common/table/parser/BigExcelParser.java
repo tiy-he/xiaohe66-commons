@@ -133,9 +133,8 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
      * 并缓存在mySheetList中
      */
     private void process() {
-        OPCPackage pkg = null;
-        try {
-            pkg = OPCPackage.open(file);
+        try (OPCPackage pkg = OPCPackage.open(file)) {
+
             XSSFReader xssfReader = new XSSFReader(pkg);
             stylesTable = xssfReader.getStylesTable();
 
@@ -151,6 +150,8 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                 try (InputStream sheet = sheets.next()) {
                     context.setSheetName(sheets.getSheetName());
                     InputSource sheetSource = new InputSource(sheet);
+
+                    callback.onStart(context);
 
                     //解析excel的每条记录，在这个过程中startElement()、characters()、endElement()这三个函数会依次执行
                     parser.parse(sheetSource);
@@ -247,11 +248,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
                 //该行不为空行则发送
                 if (flag) {
-                    if (context.getCurrentRowIndex() == 0) {
-                        callback.onNextTitle(context, new ArrayList<>(cellList));
-                    } else {
-                        callback.onNextRow(context, new ArrayList<>(cellList));
-                    }
+                    callback.onNextRow(context, new ArrayList<>(cellList));
                     context.setTotalRows(context.getTotalRows() + 1);
                 }
 

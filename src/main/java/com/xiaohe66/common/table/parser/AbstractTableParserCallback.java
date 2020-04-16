@@ -1,6 +1,5 @@
 package com.xiaohe66.common.table.parser;
 
-import com.xiaohe66.common.table.entity.ParserContext;
 import com.xiaohe66.common.table.entity.ReaderContext;
 import com.xiaohe66.common.table.entity.Table;
 
@@ -20,16 +19,11 @@ public abstract class AbstractTableParserCallback implements TableParseCallback 
     protected int readQtyOnce;
 
     public AbstractTableParserCallback(ReaderContext context,
-                                        Consumer<Table> consumer) {
+                                       Consumer<Table> consumer) {
 
         this.readerContext = context;
         this.consumer = consumer;
         readQtyOnce = context.getReadQtyOnce();
         sourceDataList = new ArrayList<>(readQtyOnce > 0 ? readQtyOnce : 10);
-    }
-
-    @Override
-    public void onNextTitle(ParserContext context, List<Object> data) {
-        readerContext.setTableTitleList(data);
     }
 }
