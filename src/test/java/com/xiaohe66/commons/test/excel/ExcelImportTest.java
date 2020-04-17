@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaohe
@@ -27,9 +28,18 @@ public class ExcelImportTest {
 
     private TableImporter importer = TableImporter.getInstance();
 
-    private DbHandler dbHandler = (sql, param) -> {
+    private DbHandler dbHandler = new DbHandler() {
+        @Override
+        public void save(String sql, List<List<Object>> param) {
+
         log.info("sql : {}", sql);
         log.info("param : {}", param);
+        }
+
+        @Override
+        public List<Map<String, Object>> query(String sql, Object... param) {
+            return null;
+        }
     };
 
     private String path = "com/xiaohe66/commons/test/excel/testExcel.xlsx";

@@ -50,4 +50,21 @@ public class SimpleMySqlBuilder implements SqlBuilder {
             throw new UnsupportedOperationException("暂未实现存在即更新");
         }
     }
+
+    @Override
+    public String buildSelectSql(String tableName, List<TableField> fieldList, String where) {
+
+        StringBuilder needShowFields = new StringBuilder();
+
+        for (TableField field : fieldList) {
+            if (field.isShow()) {
+                needShowFields.append(',').append(field.getFieldName());
+            }
+        }
+
+        return String.format("select %s from %s where 1=1 %s",
+                needShowFields.substring(1),
+                tableName,
+                where);
+    }
 }

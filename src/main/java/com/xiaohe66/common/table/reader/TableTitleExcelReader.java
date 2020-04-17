@@ -81,13 +81,15 @@ public class TableTitleExcelReader extends AbstractExcelReader {
                 } else if (field.getDefVal() != null) {
                     value = field.getDefVal();
 
-                } else if (field.getValueCreator() != null) {
-                    try {
-                        value = field.getValueCreator().apply(context, row);
-                    } catch (Exception e) {
-                        log.error("数据生成器调用时发生异常, msg : {}", e.getMessage());
-                        log.debug("数据生成器调用时发生异常, msg : {}", e.getMessage(), e);
-                    }
+                }
+            }
+
+            if (field.getValueCreator() != null) {
+                try {
+                    value = field.getValueCreator().apply(context, row);
+                } catch (Exception e) {
+                    log.error("数据生成器调用时发生异常, msg : {}", e.getMessage());
+                    log.debug("数据生成器调用时发生异常, msg : {}", e.getMessage(), e);
                 }
             }
 

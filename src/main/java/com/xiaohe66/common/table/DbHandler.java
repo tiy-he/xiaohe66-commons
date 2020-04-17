@@ -1,6 +1,7 @@
 package com.xiaohe66.common.table;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xiaohe
@@ -15,5 +16,14 @@ public interface DbHandler {
      * @param param 值
      */
     void save(String sql, List<List<Object>> param);
+
+    /**
+     * 查询
+     *
+     * @param sql   查询sql
+     * @param param 查询参数
+     * @return List<Map < String, Object>>
+     */
+    List<Map<String, Object>> query(String sql, Object... param);
 
 }

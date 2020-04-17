@@ -23,4 +23,7 @@ public class TableField {
     private Object defVal;
     private TableFieldVerifier verifyer;
     private BiFunction<ReaderContext, List<Object>, Object> valueCreator;
+
+    private boolean isShow;
+    private String showTitle;
 }

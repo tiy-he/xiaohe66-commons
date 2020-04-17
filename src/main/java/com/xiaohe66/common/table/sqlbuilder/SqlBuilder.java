@@ -11,7 +11,7 @@ import java.util.List;
 public interface SqlBuilder {
 
     /**
-     * 生成根据配置生成sql
+     * 根据配置生成sql
      *
      * @param tableName  表名
      * @param fieldList  字段列表
@@ -19,6 +19,16 @@ public interface SqlBuilder {
      * @return sql
      */
     String buildInsertSql(String tableName, List<TableField> fieldList, InsertType insertType);
+
+    /**
+     * 根据配置生成查询sql
+     *
+     * @param tableName 表名
+     * @param fieldList 字段列表
+     * @param where     where 条件
+     * @return sql
+     */
+    String buildSelectSql(String tableName, List<TableField> fieldList, String where);
 
     enum InsertType {
         /**
