@@ -1,6 +1,7 @@
 package com.xiaohe66.common.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 
@@ -33,4 +34,7 @@ public class XhFileUtils {
         return null;
     }
 
+    public static InputStream readInJar(String path) {
+        return XhFileUtils.class.getClassLoader().getResourceAsStream(path);
+    }
 }
