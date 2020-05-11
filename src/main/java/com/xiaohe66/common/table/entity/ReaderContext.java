@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,21 @@ public class ReaderContext {
     @Setter
     private List<Object> configTitleList;
 
+
+    @Getter
+    @Setter
+    private boolean isExistError;
+
+    /**
+     * 从Excel表中读取到的数据行数,不包括表头
+     */
+    @Getter
+    @Setter
+    private long dataTotal;
+
+    @Getter
+    private List<String> errorReasonList = new ArrayList<>();
+
     /**
      * 用于读取器临时缓存数据
      */
@@ -69,5 +85,10 @@ public class ReaderContext {
             return (T) cache.get(key);
         }
         return null;
+    }
+
+    public void addErrorReason(String errorReason) {
+        this.setExistError(true);
+        this.errorReasonList.add(errorReason);
     }
 }

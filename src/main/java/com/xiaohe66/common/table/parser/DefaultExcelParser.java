@@ -1,6 +1,7 @@
 package com.xiaohe66.common.table.parser;
 
 import com.xiaohe66.common.table.entity.ParserContext;
+import com.xiaohe66.common.util.XhNumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.poi.ss.usermodel.Cell;
@@ -107,14 +108,14 @@ public class DefaultExcelParser extends AbstractTableParser {
                 }
 
             } else {
-                return convertIntPossible(cell.getNumericCellValue());
+                return XhNumberUtils.tryToLong(cell.getNumericCellValue());
             }
         }
 
         if (cell.getCellType() == CellType.FORMULA) {
 
             try {
-                return convertIntPossible(cell.getNumericCellValue());
+                return XhNumberUtils.tryToLong((cell.getNumericCellValue()));
 
             } catch (IllegalStateException e) {
                 return String.valueOf(cell.getRichStringCellValue());

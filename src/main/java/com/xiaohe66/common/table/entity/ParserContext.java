@@ -17,4 +17,6 @@ public class ParserContext {
 
     private String sheetName;
 
+    private int sheetIndex;
+
 }

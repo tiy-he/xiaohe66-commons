@@ -1,6 +1,8 @@
 package com.xiaohe66.common.table.parser;
 
 import com.xiaohe66.common.table.entity.ParserContext;
+import com.xiaohe66.common.table.ex.TableImportException;
+import com.xiaohe66.common.util.XhNumberUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -123,6 +125,10 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
         try {
             process();
+
+        } catch (TableImportException e) {
+            throw e;
+
         } catch (Exception e) {
             throw new TableParserException(e);
         }
@@ -143,15 +149,21 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
             parser.setContentHandler(this);
 
             XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
-            while (sheets.hasNext()) {
-                sheetIndex++;
 
+            callback.onOpen(context);
+
+            while (sheets.hasNext()) {
                 //sheets.next()和sheets.getSheetName()不能换位置，否则sheetName报错
                 try (InputStream sheet = sheets.next()) {
-                    context.setSheetName(sheets.getSheetName());
-                    InputSource sheetSource = new InputSource(sheet);
 
-                    callback.onStart(context);
+                    context.setSheetIndex(sheetIndex++);
+                    context.setSheetName(sheets.getSheetName());
+
+                    boolean isGoOn = callback.onStart(context);
+                    if (!isGoOn) {
+                        break;
+                    }
+                    InputSource sheetSource = new InputSource(sheet);
 
                     //解析excel的每条记录，在这个过程中startElement()、characters()、endElement()这三个函数会依次执行
                     parser.parse(sheetSource);
@@ -160,6 +172,9 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                     callback.onEnd(context);
                 }
             }
+
+            callback.onClose(context);
+
         } catch (IOException | SAXException | OpenXML4JException e) {
             throw new TableParserException(e);
         }
@@ -221,12 +236,12 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
             if (!"".equals(value)) {
                 flag = true;
             }
-        } else if ("v".equals(name)) {
+        } else if ("c".equals(name)) {
             //v => 单元格的值，如果单元格是字符串，则v标签的值为该字符串在SST中的索引
             Object value = this.getDataValue(lastIndexOrValue);
             //补全单元格之间的空单元格
             if (!ref.equals(preRef)) {
-                countNullCellAndComple(ref, preRef);
+                countNullCellAndComple(ref, preRef, false);
             }
             cellList.add(curCol, value);
             curCol++;
@@ -234,6 +249,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
             if (value != null && !"".equals(value)) {
                 flag = true;
             }
+
         } else {
             //如果标签名称为row，这说明已到行尾，调用optRows()方法
             if ("row".equals(name)) {
@@ -243,7 +259,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                 }
                 //补全一行尾部可能缺失的单元格
                 if (maxRef != null) {
-                    countNullCellAndComple(maxRef, ref);
+                    countNullCellAndComple(maxRef, ref, true);
                 }
 
                 //该行不为空行则发送
@@ -311,6 +327,12 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
      */
     private Object getDataValue(String value) {
         String result;
+        if (value == null) {
+            return null;
+
+        } else if (value.length() == 0) {
+            return "";
+        }
         switch (nextDataType) {
             // 这几个的顺序不能随便交换，交换了很可能会导致数据错误
             case BOOL:
@@ -339,9 +361,17 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                     // 处理精度丢失问题
                     return formatter.formatRawCellContents(Double.parseDouble(value), formatIndex, formatString).trim();
                 } else {
-                    // todo : 如果原本就是一个长小数，则会自动省略掉后面的。所以应考虑更安全的方案
-                    double valueDouble = Math.round(Double.parseDouble(value) * 10000000) / 10000000.0;
-                    return convertIntPossible(valueDouble);
+
+                    int dotIndex = value.indexOf('.');
+                    double valueDouble;
+                    try {
+                        valueDouble = dotIndex != -1 ?
+                                XhNumberUtils.tryRepairScale(value) :
+                                Double.parseDouble(value);
+                    } catch (NumberFormatException e) {
+                        return value;
+                    }
+                    return XhNumberUtils.tryToLong(valueDouble);
                 }
             case DATE:
                 result = formatter.formatRawCellContents(Double.parseDouble(value), formatIndex, formatString);
@@ -352,7 +382,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
         }
     }
 
-    private void countNullCellAndComple(String ref, String preRef) {
+    private void countNullCellAndComple(String ref, String preRef, boolean isEnd) {
         //excel2007最大行数是1048576，最大列数是16384，最后一列列名是XFD
         String xfd = ref.replaceAll("\\d+", "");
         String xfd_1 = preRef.replaceAll("\\d+", "");
@@ -362,10 +392,31 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
         char[] letter = xfd.toCharArray();
         char[] letter_1 = xfd_1.toCharArray();
-        int res = (letter[0] - letter_1[0]) * 26 * 26 + (letter[1] - letter_1[1]) * 26 + (letter[2] - letter_1[2]);
+        int res = (letter[0] - letter_1[0]) * 26 * 26 +
+                (letter[1] - letter_1[1]) * 26 +
+                (letter[2] - letter_1[2]);
 
+        /*
+         * |   A  |   B     |   C    |
+         *--------------------------------
+         * |   a  |         |   c    |
+         *--------------------------------
+         * |   A  |        |        |
+         *--------------------------------
+         *
+         * 如上表所示,a-c之间补全空格
+         * 第2行中,是补全中间,应该补全1个空格
+         * 而第3行中,补全末尾,应该补全2个空格
+         * 因此,补全中间的空格个数要比补全末尾的个数少1个
+         *
+         * -- xiaohe 20.05.07
+         *
+         */
+        if (!isEnd) {
+            res -= 1;
+        }
         // 补全空白
-        for (int i = 0; i < res - 1; i++) {
+        for (int i = 0; i < res; i++) {
             cellList.add(curCol++, null);
         }
     }
@@ -380,16 +431,5 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
             str = strBuilder.toString();
         }
         return str;
-    }
-
-    protected Object convertIntPossible(double value) {
-        long cellValueLong = (long) value;
-
-        if ((double) cellValueLong == value) {
-            return cellValueLong;
-
-        } else {
-            return value;
-        }
     }
 }

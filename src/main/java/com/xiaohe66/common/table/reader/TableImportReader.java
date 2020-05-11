@@ -19,6 +19,6 @@ public interface TableImportReader {
      * @param consumer 读取成功后的回调，可能读取全表后回调，也可能读取一部分后回调，即可能会回调多次
      * @throws IOException IOException
      */
-    void read(ReaderContext context, Consumer<Table> consumer) throws IOException;
+    void read(ReaderContext context, Consumer<Table> consumer);
 
 }

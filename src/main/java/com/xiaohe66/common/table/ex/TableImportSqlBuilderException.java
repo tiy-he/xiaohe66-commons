@@ -4,7 +4,7 @@ package com.xiaohe66.common.table.ex;
  * @author xiaohe
  * @time 2020.04.09 15:11
  */
-public class TableImportSqlBuilderException extends RuntimeException{
+public class TableImportSqlBuilderException extends TableImportException{
     public TableImportSqlBuilderException() {
     }
 

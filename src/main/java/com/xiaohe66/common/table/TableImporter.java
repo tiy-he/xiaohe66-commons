@@ -1,13 +1,13 @@
 package com.xiaohe66.common.table;
 
+import com.xiaohe66.common.table.entity.ImportResult;
 import com.xiaohe66.common.table.entity.ReaderContext;
 import com.xiaohe66.common.table.entity.TableConfig;
-import com.xiaohe66.common.table.ex.TableImportException;
 import com.xiaohe66.common.table.reader.TableImportReader;
 import com.xiaohe66.common.table.sqlbuilder.SqlBuilder;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.List;
 
 /**
  * @author xiaohe
@@ -28,23 +28,46 @@ public class TableImporter {
         importWithFile(file, config, null);
     }
 
-    public void importWithFile(File file, TableConfig config, Object otherParam) {
+    public ImportResult importWithFile(File file, TableConfig config, Object otherParam) {
 
         TableImportReader reader = config.getReader();
         SqlBuilder sqlBuilder = config.getSqlBuilder();
         DbHandler dbHandler = config.getDbHandler();
 
-        try {
-            String sql = sqlBuilder.buildInsertSql(config.getTableName(), config.getFieldList(), config.getInsertType());
 
-            ReaderContext context = new ReaderContext(file, config.getFieldList(), config.getReadQtyOnce(), otherParam);
+        String sql = sqlBuilder.buildInsertSql(config.getTableName(), config.getFieldList(), config.getInsertType());
 
-            reader.read(context, table ->
-                    dbHandler.save(sql, table.getDataList()));
+        ReaderContext context = new ReaderContext(file, config.getFieldList(), config.getReadQtyOnce(), otherParam);
 
-        } catch (IOException e) {
-            throw new TableImportException(e);
+        ImportResult result = new ImportResult();
+
+        reader.read(context, table -> {
+
+            List<List<Object>> dataList = table.getDataList();
+
+            // 执行sql输入的数量
+            long executeSqlQty = result.getExecuteSqlQty();
+            result.setExecuteSqlQty(executeSqlQty + dataList.size());
+
+            // 成功执行sql的数量
+            long successQty = dbHandler.save(sql, dataList);
+            result.setSuccessQty(result.getSuccessQty() + successQty);
+
+        });
+
+        // 从Excel表中读取到的数据行数
+        result.setExcelQty(context.getDataTotal());
+
+        if (context.isExistError()) {
+            List<String> errorReasonList = context.getErrorReasonList();
+            result.setErrorReason(errorReasonList.isEmpty() ? "" : errorReasonList.toString());
+
+        } else {
+            result.setSuccess(result.getSuccessQty() == result.getExcelQty());
         }
+
+        result.setSql(sql);
+        return result;
     }
 
 }

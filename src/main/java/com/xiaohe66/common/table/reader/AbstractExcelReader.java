@@ -29,7 +29,7 @@ public abstract class AbstractExcelReader implements TableImportReader {
     protected abstract List<List<Object>> convertDbData(ReaderContext context, List<List<Object>> sourceDataList);
 
     @Override
-    public void read(ReaderContext context, Consumer<Table> consumer) throws IOException {
+    public void read(ReaderContext context, Consumer<Table> consumer) {
 
 
         if (context.getReadQtyOnce() > 0) {

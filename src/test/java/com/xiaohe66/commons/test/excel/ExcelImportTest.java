@@ -30,10 +30,11 @@ public class ExcelImportTest {
 
     private DbHandler dbHandler = new DbHandler() {
         @Override
-        public void save(String sql, List<List<Object>> param) {
+        public long save(String sql, List<List<Object>> param) {
 
         log.info("sql : {}", sql);
         log.info("param : {}", param);
+        return 0;
         }
 
         @Override

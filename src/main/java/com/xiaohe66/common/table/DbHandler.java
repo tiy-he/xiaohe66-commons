@@ -14,8 +14,9 @@ public interface DbHandler {
      *
      * @param sql   sql
      * @param param 值
+     * @return 影响行数
      */
-    void save(String sql, List<List<Object>> param);
+    long save(String sql, List<List<Object>> param);
 
     /**
      * 查询

@@ -56,11 +56,12 @@ public class TableExporterTest {
 
         dbHandler = new DbHandler() {
             @Override
-            public void save(String sql, List<List<Object>> param) {
+            public long save(String sql, List<List<Object>> param) {
                 log.info("sql : {}", sql);
                 for (List<Object> data : param) {
                     log.info("param : {}", data);
                 }
+                return 0;
             }
 
             @Override
