@@ -17,8 +17,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -143,10 +145,14 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
             XSSFReader xssfReader = new XSSFReader(pkg);
             stylesTable = xssfReader.getStylesTable();
+            sharedStringsTable = xssfReader.getSharedStringsTable();
 
-            XMLReader parser = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-            this.sharedStringsTable = xssfReader.getSharedStringsTable();
-            parser.setContentHandler(this);
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser parser = factory.newSAXParser();
+//            parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//            parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            XMLReader xmlReader = parser.getXMLReader();
+            xmlReader.setContentHandler(this);
 
             XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
 
@@ -166,7 +172,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                     InputSource sheetSource = new InputSource(sheet);
 
                     //解析excel的每条记录，在这个过程中startElement()、characters()、endElement()这三个函数会依次执行
-                    parser.parse(sheetSource);
+                    xmlReader.parse(sheetSource);
 
                     // 回调 end方法
                     callback.onEnd(context);
@@ -175,7 +181,7 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
             callback.onClose(context);
 
-        } catch (IOException | SAXException | OpenXML4JException e) {
+        } catch (IOException | SAXException | OpenXML4JException | ParserConfigurationException e) {
             throw new TableParserException(e);
         }
     }
