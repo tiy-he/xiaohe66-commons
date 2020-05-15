@@ -1,5 +1,6 @@
 package com.xiaohe66.common.table;
 
+import com.xiaohe66.common.table.db.DbHandler;
 import com.xiaohe66.common.table.entity.ImportResult;
 import com.xiaohe66.common.table.entity.ReaderContext;
 import com.xiaohe66.common.table.entity.TableConfig;
@@ -35,7 +36,7 @@ public class TableImporter {
         DbHandler dbHandler = config.getDbHandler();
 
 
-        String sql = sqlBuilder.buildInsertSql(config.getTableName(), config.getFieldList(), config.getInsertType());
+//        String sql = sqlBuilder.buildInsertSql(config.getTableName(), config.getFieldList(), config.getInsertType());
 
         ReaderContext context = new ReaderContext(file, config.getFieldList(), config.getReadQtyOnce(), otherParam);
 
@@ -50,7 +51,7 @@ public class TableImporter {
             result.setExecuteSqlQty(executeSqlQty + dataList.size());
 
             // 成功执行sql的数量
-            long successQty = dbHandler.save(sql, dataList);
+            long successQty = dbHandler.importHandle(config, dataList);
             result.setSuccessQty(result.getSuccessQty() + successQty);
 
         });
@@ -66,7 +67,8 @@ public class TableImporter {
             result.setSuccess(result.getSuccessQty() == result.getExcelQty());
         }
 
-        result.setSql(sql);
+        // todo : 存在即更新的操作怎么返回sql？
+        result.setSql(null);
         return result;
     }
 

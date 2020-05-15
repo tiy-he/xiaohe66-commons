@@ -1,9 +1,10 @@
 package com.xiaohe66.commons.test.excel;
 
-import com.xiaohe66.common.table.DbHandler;
+import com.xiaohe66.common.table.TableImporter;
+import com.xiaohe66.common.table.db.AbstractDbHandler;
+import com.xiaohe66.common.table.db.DbHandler;
 import com.xiaohe66.common.table.entity.TableConfig;
 import com.xiaohe66.common.table.entity.TableField;
-import com.xiaohe66.common.table.TableImporter;
 import com.xiaohe66.common.table.reader.TableTitleExcelReader;
 import com.xiaohe66.common.table.sqlbuilder.SimpleMySqlBuilder;
 import com.xiaohe66.common.table.sqlbuilder.SqlBuilder;
@@ -28,13 +29,33 @@ public class ExcelImportTest {
 
     private TableImporter importer = TableImporter.getInstance();
 
-    private DbHandler dbHandler = new DbHandler() {
+    private DbHandler dbHandler = new AbstractDbHandler() {
+
+        int count = 0;
+
         @Override
         public long save(String sql, List<List<Object>> param) {
+            log.info("param : {}", param);
+            return 0;
+        }
 
-        log.info("sql : {}", sql);
-        log.info("param : {}", param);
-        return 0;
+        @Override
+        public long saveOne(String sql, List<Object> param) {
+            log.info("save one : {}, data : {}", sql, param);
+            return 0;
+        }
+
+        @Override
+        public long update(String sql, List<Object> param) {
+            log.info("update: {}, data : {}", sql, param);
+            return 0;
+        }
+
+        @Override
+        public boolean checkExist(String sql, List<Object> param) {
+            log.info("check : {}, data : {}", sql, param);
+
+            return count++ % 2 == 0;
         }
 
         @Override
@@ -57,12 +78,12 @@ public class ExcelImportTest {
         file = new File(resource.getFile());
 
         List<TableField> fieldList = Arrays.asList(
-                TableField.builder().tableTitle("表头1").fieldName("f1").build(),
+                TableField.builder().tableTitle("表头1").fieldName("f1").isUnique(true).build(),
                 TableField.builder().tableTitle("表头2").fieldName("f2").build(),
                 TableField.builder().tableTitle("表头3").fieldName("f3").build(),
                 TableField.builder().tableTitle("表头4").build(),
                 TableField.builder().tableTitle("表头5").fieldName("f5").defVal(555).build(),
-                TableField.builder().tableTitle("表头6").fieldName("f6").build(),
+                TableField.builder().tableTitle("表头6").fieldName("f6").isUnique(true).build(),
                 TableField.builder().tableTitle("表头7").fieldName("f7").valueCreator((row, columnArr) -> {
                     log.info("row : {}", row);
                     log.info("columnArr : {}", columnArr);
@@ -73,7 +94,7 @@ public class ExcelImportTest {
         config = TableConfig.builder()
                 .dbHandler(dbHandler)
                 .fieldList(fieldList)
-                .insertType(SqlBuilder.InsertType.EXIST_IGNORE)
+                .insertType(SqlBuilder.InsertType.EXIST_UPDATE_SELECT)
                 .reader(reader)
                 .sqlBuilder(SimpleMySqlBuilder.getInstance())
                 .tableName("testTable")
@@ -83,5 +104,10 @@ public class ExcelImportTest {
     @Test
     public void test() {
         importer.importWithFile(file, config, "otherParam");
+    }
+
+    @Test
+    public void testSqlBuilder() {
+
     }
 }

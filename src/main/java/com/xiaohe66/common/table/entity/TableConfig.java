@@ -1,6 +1,6 @@
 package com.xiaohe66.common.table.entity;
 
-import com.xiaohe66.common.table.DbHandler;
+import com.xiaohe66.common.table.db.DbHandler;
 import com.xiaohe66.common.table.writer.TableWriter;
 import com.xiaohe66.common.table.reader.TableImportReader;
 import com.xiaohe66.common.table.sqlbuilder.SqlBuilder;

@@ -1,6 +1,7 @@
 package com.xiaohe66.commons.test.excel;
 
-import com.xiaohe66.common.table.DbHandler;
+import com.xiaohe66.common.table.db.AbstractDbHandler;
+import com.xiaohe66.common.table.db.DbHandler;
 import com.xiaohe66.common.table.TableExporter;
 import com.xiaohe66.common.table.entity.TableConfig;
 import com.xiaohe66.common.table.entity.TableField;
@@ -54,7 +55,7 @@ public class TableExporterTest {
                 }).build()
         );
 
-        dbHandler = new DbHandler() {
+        dbHandler = new AbstractDbHandler() {
             @Override
             public long save(String sql, List<List<Object>> param) {
                 log.info("sql : {}", sql);

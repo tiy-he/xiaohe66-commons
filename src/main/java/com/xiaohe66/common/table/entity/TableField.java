@@ -17,7 +17,8 @@ public class TableField {
 
     private String tableTitle;
     private String fieldName;
-    private boolean isKey;
+    private boolean isUnique;
+    private boolean isUpdate;
     private boolean isRequire;
     private String regex;
     private Object defVal;

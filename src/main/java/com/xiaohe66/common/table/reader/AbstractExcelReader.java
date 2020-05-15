@@ -8,7 +8,6 @@ import com.xiaohe66.common.table.parser.BigExcelParser;
 import com.xiaohe66.common.table.parser.DefaultExcelParser;
 import com.xiaohe66.common.table.parser.TableParser;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;

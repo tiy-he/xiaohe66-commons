@@ -30,12 +30,31 @@ public interface SqlBuilder {
      */
     String buildSelectSql(String tableName, List<TableField> fieldList, String where);
 
+    /**
+     * 根据配置生成更新sql
+     *
+     * @param tableName 表名
+     * @param fieldList 字段列表
+     * @return sql
+     */
+    String buildUpdateSql(String tableName, List<TableField> fieldList);
+
+    /**
+     * 检查是否需要更新的sql
+     *
+     * @param tableName 表名
+     * @param fieldList 字段列表
+     * @return sql
+     */
+    String checkExistSql(String tableName, List<TableField> fieldList);
+
     enum InsertType {
         /**
-         * 存在则忽略、存在则更新
+         * 存在则忽略、存在则更新、存在则更新（用查询方式判断是否存在）
          */
         EXIST_IGNORE,
-        EXIST_UPDATE
+        EXIST_UPDATE,
+        EXIST_UPDATE_SELECT
     }
 
 }
