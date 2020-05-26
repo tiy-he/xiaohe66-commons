@@ -12,6 +12,8 @@ import org.apache.poi.xssf.model.SharedStringsTable;
 import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,11 +41,13 @@ import java.util.List;
  */
 public class BigExcelParser extends DefaultHandler implements TableParser {
 
+    private static final Logger log = LoggerFactory.getLogger(BigExcelParser.class);
+
     enum CellDataType {
         /**
          * 单元格中的数据可能的数据类型
          */
-        BOOL, ERROR, FORMULA, INLINESTR, SSTINDEX, NUMBER, DATE, NULL
+        BOOL, ERROR, FORMULA, INLINESTR, SSTINDEX, NUMBER, DATE
     }
 
     /**
@@ -290,8 +294,6 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
      * @param attributes Attributes
      */
     private void setNextDataType(Attributes attributes) {
-        //cellType为空，则表示该单元格类型为数字
-        nextDataType = CellDataType.NUMBER;
         formatIndex = -1;
         formatString = null;
         String cellType = attributes.getValue("t");
@@ -299,18 +301,20 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
 
         if ("b".equals(cellType)) {
             nextDataType = CellDataType.BOOL;
+
         } else if ("e".equals(cellType)) {
             nextDataType = CellDataType.ERROR;
+
         } else if ("inlineStr".equals(cellType)) {
             nextDataType = CellDataType.INLINESTR;
+
         } else if ("s".equals(cellType)) {
             nextDataType = CellDataType.SSTINDEX;
+
         } else if ("str".equals(cellType)) {
             nextDataType = CellDataType.FORMULA;
-        }
 
-        //处理日期
-        if (cellStyleStr != null) {
+        } else if (cellStyleStr != null) {
             int styleIndex = Integer.parseInt(cellStyleStr);
             XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);
             formatIndex = style.getDataFormat();
@@ -320,6 +324,14 @@ public class BigExcelParser extends DefaultHandler implements TableParser {
                 nextDataType = CellDataType.DATE;
                 formatString = "yyyy-MM-dd hh:mm:ss";
             }
+
+        } else if (cellType == null) {
+            //cellType为空，则表示该单元格类型为数字
+            nextDataType = CellDataType.NUMBER;
+
+        } else {
+
+            log.warn("需处理的未知类型, cellType :  {}", cellType);
         }
     }
 
