@@ -1,6 +1,5 @@
 package com.xiaohe66.common.email.service;
 
-import com.sun.net.ssl.internal.ssl.Provider;
 import com.xiaohe66.common.email.entity.Email;
 import com.xiaohe66.common.email.entity.EmailAttachment;
 import com.xiaohe66.common.email.entity.EmailImage;
@@ -24,7 +23,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -65,7 +63,9 @@ public class EmailSendService {
         logger.info("初始化邮件发送服务session");
         logger.debug("emailSender : {}", sender);
 
-        Security.addProvider(new Provider());
+        // todo : 升级到 jdk 11后报错，注释后还可以使用，先观察暂不处理
+//        Security.addProvider(new Provider());
+
         Properties props = new Properties();
         props.setProperty("mail.smtp.host", sender.getSmtpHost());
         props.setProperty("mail.transport.protocol", "smtp");
