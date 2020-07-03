@@ -36,6 +36,26 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testFormatObj2() {
+
+        Result<Object> result = new Result<>();
+        result.setCode(0);
+        result.setMsg("msg");
+        result.setData(new JsonUtilsTestObj("测试名称"));
+
+        String json = JsonUtils.toString(result);
+
+        log.info("format json : {}", json);
+        Result<String> formatResult = JsonUtils.formatResult(json, String.class);
+        log.info("format结果 : {}", formatResult);
+
+        result.setData("{\"name\":\"测试名称\"}");
+
+        assertEquals(result, formatResult);
+
+    }
+
+    @Test
     public void testFormatArray() {
 
         Result<List<JsonUtilsTestObj>> result = new Result<>();

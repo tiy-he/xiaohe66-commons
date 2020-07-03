@@ -1,13 +1,20 @@
 package com.xiaohe66.common.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.xiaohe66.common.gson.GsonLocalDateDeserializer;
+import com.xiaohe66.common.gson.GsonLocalDateTimeDeserializer;
+import com.xiaohe66.common.gson.GsonResultDeserializer;
+import com.xiaohe66.common.gson.GsonStringDeserializer;
 import com.xiaohe66.common.model.Result;
 import com.xiaohe66.common.reflect.ParamType;
 
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,7 +25,16 @@ import java.util.List;
  */
 public class JsonUtils {
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson;
+
+    static {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeDeserializer())
+                .registerTypeAdapter(LocalDate.class, new GsonLocalDateDeserializer())
+                .registerTypeAdapter(String.class, new GsonStringDeserializer())
+                .registerTypeAdapter(Result.class, new GsonResultDeserializer())
+                .create();
+    }
 
     private JsonUtils() {
     }

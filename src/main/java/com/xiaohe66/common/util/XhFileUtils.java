@@ -1,9 +1,15 @@
 package com.xiaohe66.common.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Objects;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @author xiaohe
@@ -34,7 +40,4 @@ public class XhFileUtils {
         return null;
     }
 
-    public static InputStream readInJar(String path) {
-        return XhFileUtils.class.getClassLoader().getResourceAsStream(path);
-    }
 }
