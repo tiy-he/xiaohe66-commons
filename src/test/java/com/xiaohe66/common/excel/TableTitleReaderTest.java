@@ -1,4 +1,4 @@
-package com.xiaohe66.commons.test.excel;
+package com.xiaohe66.common.excel;
 
 import com.xiaohe66.common.table.db.AbstractDbHandler;
 import com.xiaohe66.common.table.db.DbHandler;
@@ -27,7 +27,7 @@ public class TableTitleReaderTest {
 
     private TableTitleExcelReader reader = TableTitleExcelReader.getInstance();
 
-    private String path = "com/xiaohe66/commons/test/excel/testExcel.xlsx";
+    private String path = "com/xiaohe66/common/excel/testExcel.xlsx";
 
     private File file;
 

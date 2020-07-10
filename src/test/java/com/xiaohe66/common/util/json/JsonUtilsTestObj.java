@@ -1,4 +1,4 @@
-package com.xiaohe66.commons.test.util.json;
+package com.xiaohe66.common.util.json;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

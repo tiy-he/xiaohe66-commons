@@ -1,4 +1,4 @@
-package com.xiaohe66.commons.test.excel;
+package com.xiaohe66.common.excel;
 
 import com.xiaohe66.common.table.TableImporter;
 import com.xiaohe66.common.table.db.AbstractDbHandler;
@@ -64,7 +64,7 @@ public class ExcelImportTest {
         }
     };
 
-    private String path = "com/xiaohe66/commons/test/excel/testExcel.xlsx";
+    private String path = "com/xiaohe66/common/excel/testExcel.xlsx";
 
     private File file;
 

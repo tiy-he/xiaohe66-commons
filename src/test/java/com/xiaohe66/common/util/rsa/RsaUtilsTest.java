@@ -1,4 +1,4 @@
-package com.xiaohe66.commons.test.util.rsa;
+package com.xiaohe66.common.util.rsa;
 
 import com.xiaohe66.common.model.RsaKey;
 import com.xiaohe66.common.util.RsaUtils;

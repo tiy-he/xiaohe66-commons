@@ -1,6 +1,5 @@
-package com.xiaohe66.commons.test.util;
+package com.xiaohe66.common.util;
 
-import com.xiaohe66.common.util.XhDateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.junit.Test;
 import org.slf4j.Logger;

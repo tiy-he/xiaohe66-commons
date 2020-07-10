@@ -1,6 +1,5 @@
-package com.xiaohe66.commons.test.util;
+package com.xiaohe66.common.util;
 
-import com.xiaohe66.common.util.XhNumberUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
