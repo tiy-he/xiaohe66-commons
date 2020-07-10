@@ -36,10 +36,8 @@ public class RsaUtils {
 
     /**
      * 创建公私钥对
-     * <p>
-     * todo : 支持更多长度
      */
-    private static RsaKey createKey(int keyLength) {
+    public static RsaKey createKey(int keyLength) {
         KeyPairGenerator keyPairGenerator;
         try {
             keyPairGenerator = KeyPairGenerator.getInstance(RSA);

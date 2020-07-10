@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
  * @time 2020.01.13 11:10
  */
 public class ParamType implements ParameterizedType {
+
+    private static final Type[] EMPTY_ARGS = new Type[0];
+
     private final Class<?> raw;
     private final Type[] args;
 
@@ -18,7 +21,7 @@ public class ParamType implements ParameterizedType {
 
     public ParamType(Class<?> raw, Type... args) {
         this.raw = raw;
-        this.args = args != null ? args : new Type[0];
+        this.args = args != null ? args : EMPTY_ARGS;
     }
 
     @Override
