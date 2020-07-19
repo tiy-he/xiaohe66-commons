@@ -5,7 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.xiaohe66.common.model.Result;
+import com.xiaohe66.common.net.xh.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

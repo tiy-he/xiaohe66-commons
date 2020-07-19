@@ -9,8 +9,10 @@ import com.xiaohe66.common.gson.GsonLocalDateDeserializer;
 import com.xiaohe66.common.gson.GsonLocalDateTimeDeserializer;
 import com.xiaohe66.common.gson.GsonResultDeserializer;
 import com.xiaohe66.common.gson.GsonStringDeserializer;
-import com.xiaohe66.common.model.Result;
+import com.xiaohe66.common.net.xh.Result;
 import com.xiaohe66.common.reflect.ParamType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.time.LocalDate;
@@ -25,15 +27,26 @@ import java.util.List;
  */
 public class JsonUtils {
 
+    private static final Logger log = LoggerFactory.getLogger(JsonUtils.class);
+
     private static final Gson gson;
 
     static {
-        gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeDeserializer())
-                .registerTypeAdapter(LocalDate.class, new GsonLocalDateDeserializer())
+        GsonBuilder builder = new GsonBuilder()
                 .registerTypeAdapter(String.class, new GsonStringDeserializer())
-                .registerTypeAdapter(Result.class, new GsonResultDeserializer())
-                .create();
+                .registerTypeAdapter(Result.class, new GsonResultDeserializer());
+
+        try {
+            // 安卓26版本（安卓8.0）以下无法使用 LocalDate
+            Class.forName("java.time.LocalDate");
+            builder.registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeDeserializer());
+            builder.registerTypeAdapter(LocalDate.class, new GsonLocalDateDeserializer());
+
+        } catch (ClassNotFoundException e) {
+            log.error("无法加载LocalDate类");
+        }
+
+        gson = builder.create();
     }
 
     private JsonUtils() {
@@ -75,6 +88,16 @@ public class JsonUtils {
 
     public static <T> T formatObject(String jsonStr, Type type) {
         return gson.fromJson(jsonStr, type);
+    }
+
+    public static <T> List<T> formatList(String jsonStr, Class<T> cls) {
+        Type type = new ParamType(List.class, cls);
+        return gson.fromJson(jsonStr, type);
+    }
+
+    public static <T> List<T> formatList(String jsonStr, Type type) {
+        Type listType = new ParamType(List.class, type);
+        return gson.fromJson(jsonStr, listType);
     }
 
     public static <T> Result<T> formatResult(String reader, Class<T> cls) {

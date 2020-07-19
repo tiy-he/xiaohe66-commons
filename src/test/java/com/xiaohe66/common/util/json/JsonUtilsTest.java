@@ -1,6 +1,6 @@
 package com.xiaohe66.common.util.json;
 
-import com.xiaohe66.common.model.Result;
+import com.xiaohe66.common.net.xh.Result;
 import com.xiaohe66.common.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
