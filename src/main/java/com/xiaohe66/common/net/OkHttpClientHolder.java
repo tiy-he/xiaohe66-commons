@@ -8,19 +8,13 @@ import okhttp3.OkHttpClient;
  */
 public class OkHttpClientHolder {
 
-    private static volatile OkHttpClient client;
+    // todo : change param
+    private static OkHttpClient client = new OkHttpClient();
 
     private OkHttpClientHolder() {
     }
 
     public static OkHttpClient get() {
-        if (client == null) {
-            synchronized (OkHttpClientHolder.class) {
-                if (client == null) {
-                    client = new OkHttpClient();
-                }
-            }
-        }
         return client;
     }
 

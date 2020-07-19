@@ -1,4 +1,4 @@
-package com.xiaohe66.common.model;
+package com.xiaohe66.common.net.xh;
 
 import lombok.Data;
 
