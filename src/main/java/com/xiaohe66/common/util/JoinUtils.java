@@ -7,6 +7,7 @@ import java.util.Objects;
 /**
  * @author xiaohe
  * @time 2020.07.03 16:15
+ * @see com.google.common.base.Joiner
  */
 public class JoinUtils {
 
@@ -39,6 +40,71 @@ public class JoinUtils {
         }
 
         return "";
+    }
+
+    public static String join(Object[] param) {
+        return join(param, ",");
+    }
+
+    public static String join(Object[] param, String separator) {
+
+        Objects.requireNonNull(param);
+        Objects.requireNonNull(separator);
+
+        if (param.length == 1) {
+            return toString(param[0]);
+        }
+
+        StringBuilder result = new StringBuilder(toString(param[0]));
+
+        for (int i = 1; i < param.length; i++) {
+            result.append(separator).append(toString(param[i]));
+        }
+
+        return result.toString();
+    }
+
+    public static String join(int[] param) {
+        return join(param, ",");
+    }
+
+    public static String join(int[] param, String separator) {
+
+        Object[] arr = new Object[param.length];
+        for (int i = 0; i < param.length; i++) {
+            arr[i] = param[i];
+        }
+        return join(arr, separator);
+    }
+
+    public static String join(long[] param) {
+        return join(param, ",");
+    }
+
+    public static String join(long[] param, String separator) {
+
+        Object[] arr = new Object[param.length];
+        for (int i = 0; i < param.length; i++) {
+            arr[i] = param[i];
+        }
+        return join(arr, separator);
+    }
+
+    public static String join(char[] param) {
+        return join(param, ",");
+    }
+
+    public static String join(char[] param, String separator) {
+
+        Object[] arr = new Object[param.length];
+        for (int i = 0; i < param.length; i++) {
+            arr[i] = param[i];
+        }
+        return join(arr, separator);
+    }
+
+    private static String toString(Object obj) {
+        return obj == null ? "" : obj.toString();
     }
 
 }

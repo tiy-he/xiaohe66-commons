@@ -62,4 +62,29 @@ public class JoinUtilsTest {
         assertEquals(correctString, joinStr);
 
     }
+
+    @Test
+    public void test5() {
+
+        int[] list = {1,2,3,4};
+
+        String correctString = "1|2|3|4";
+
+        String joinStr = JoinUtils.join(list,"|");
+
+        assertEquals(correctString, joinStr);
+
+    }
+
+    @Test
+    public void test6() {
+
+        long[] list = {1,2,3,4};
+
+        String correctString = "1,2,3,4";
+
+        String joinStr = JoinUtils.join(list,",");
+
+        assertEquals(correctString, joinStr);
+    }
 }
