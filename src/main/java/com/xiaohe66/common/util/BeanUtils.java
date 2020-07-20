@@ -1,14 +1,14 @@
 package com.xiaohe66.common.util;
 
-import com.xiaohe66.common.bean.Ignore;
-import com.xiaohe66.common.bean.Rename;
-import org.apache.commons.lang3.StringUtils;
+import com.xiaohe66.common.bean.BeanField;
+import com.xiaohe66.common.bean.BeanFieldCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -21,8 +21,9 @@ public class BeanUtils {
 
     private static final Logger log = LoggerFactory.getLogger(BeanUtils.class);
 
-    private BeanUtils() {
+    private static final BeanFieldCache cache = new BeanFieldCache();
 
+    private BeanUtils() {
     }
 
     public static Map<String, Object> toMap(Object bean) {
@@ -30,34 +31,27 @@ public class BeanUtils {
         Objects.requireNonNull(bean);
 
         Class<?> beanCls = bean.getClass();
+        List<BeanField> beanFieldList = cache.get(beanCls);
 
-        Field[] fields = beanCls.getDeclaredFields();
-
-        if (fields.length == 0) {
+        if (beanFieldList.isEmpty()) {
             return Collections.emptyMap();
         }
 
         Map<String, Object> result = new HashMap<>();
 
+        for (BeanField beanField : beanFieldList) {
 
-        for (Field field : fields) {
+            Field field = beanField.getField();
 
-            // todo : 效率提升
-            Ignore ignore = field.getDeclaredAnnotation(Ignore.class);
-            if (ignore == null) {
-
-                String name = getFieldName(field);
-
-                Object val;
-                try {
-                    val = getFieldValue(field, bean);
-                } catch (IllegalAccessException e) {
-                    log.error("get Field value error, className : {}, fieldName : {}", beanCls.getName(), name);
-                    continue;
-                }
-
-                result.put(name, val);
+            Object val;
+            try {
+                val = field.get(bean);
+            } catch (IllegalAccessException e) {
+                log.error("get Field value error, className : {}, fieldName : {}", beanCls.getName(), field.getName());
+                continue;
             }
+
+            result.put(beanField.getName(), val);
         }
 
         return result;
@@ -69,56 +63,26 @@ public class BeanUtils {
 
         Class<?> beanCls = bean.getClass();
 
-        Field[] fields = beanCls.getDeclaredFields();
+        List<BeanField> beanFieldList = cache.get(beanCls);
 
-        if (fields.length == 0) {
+        if (beanFieldList.isEmpty()) {
             return;
         }
 
+        for (BeanField beanField : beanFieldList) {
 
-        for (Field field : fields) {
+            Field field = beanField.getField();
 
-            // todo : 效率提升
-            Ignore ignore = field.getDeclaredAnnotation(Ignore.class);
-            if (ignore == null) {
-
-                String name = getFieldName(field);
-
-                Object val;
-                try {
-                    val = getFieldValue(field, bean);
-                } catch (IllegalAccessException e) {
-                    log.error("get Field value error, className : {}, fieldName : {}", beanCls.getName(), name);
-                    continue;
-                }
-
-                consumer.accept(name, val);
+            Object val;
+            try {
+                val = field.get(bean);
+            } catch (IllegalAccessException e) {
+                log.error("get Field value error, className : {}, fieldName : {}", beanCls.getName(), field.getName());
+                continue;
             }
+
+            consumer.accept(beanField.getName(), val);
         }
-    }
-
-    private static String getFieldName(Field field) {
-
-        // todo : 效率提升
-        Rename rename = field.getDeclaredAnnotation(Rename.class);
-
-        String name = null;
-        if (rename != null) {
-            String value = rename.value();
-            if (StringUtils.isNotEmpty(value)) {
-                name = value;
-            }
-        }
-        if (name == null) {
-            name = field.getName();
-        }
-
-        return name;
-    }
-
-    private static Object getFieldValue(Field field, Object bean) throws IllegalAccessException {
-        field.setAccessible(true);
-        return field.get(bean);
     }
 
 }

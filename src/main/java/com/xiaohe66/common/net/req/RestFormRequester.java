@@ -1,6 +1,8 @@
 package com.xiaohe66.common.net.req;
 
 import com.xiaohe66.common.net.AbstractCallback;
+import com.xiaohe66.common.util.BeanUtils;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -34,7 +36,12 @@ public abstract class RestFormRequester<P, C extends AbstractCallback> extends R
     }
 
     protected RequestBody createFormBody(P param) {
-        return null;
+
+        FormBody.Builder builder = new FormBody.Builder();
+        BeanUtils.eachField(param, (key, val) ->
+                builder.add(key,val == null ? "" : val.toString()));
+
+        return builder.build();
     }
 
 }

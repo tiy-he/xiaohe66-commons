@@ -1,8 +1,7 @@
 package com.xiaohe66.common.util;
 
-import com.xiaohe66.common.bean.Ignore;
-import com.xiaohe66.common.bean.Rename;
-import com.xiaohe66.common.net.xh.Result;
+import com.xiaohe66.common.bean.BeanFieldIgnore;
+import com.xiaohe66.common.bean.BeanFieldName;
 import org.apache.commons.collections4.map.HashedMap;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,10 +23,10 @@ public class BeanUtilsTest {
 
         private String data;
 
-        @Ignore
+        @BeanFieldIgnore
         private String ignore;
 
-        @Rename("newName")
+        @BeanFieldName("newName")
         private String rename;
 
     }
@@ -48,10 +47,16 @@ public class BeanUtilsTest {
         correctMap.put("data","field data");
         correctMap.put("name","field name");
 
+        log.info("first toMap");
         Map<String, Object> result = BeanUtils.toMap(testObj);
-
         log.info("BeanUtils toMap result : {}",result);
+        assertEquals(correctMap,result);
 
+        testObj.data = "new Data";
+        correctMap.put("data","new Data");
+        log.info("second toMap");
+        result = BeanUtils.toMap(testObj);
+        log.info("BeanUtils toMap result : {}",result);
         assertEquals(correctMap,result);
 
     }
