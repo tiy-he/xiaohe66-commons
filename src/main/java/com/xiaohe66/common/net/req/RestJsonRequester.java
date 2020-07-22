@@ -1,6 +1,5 @@
 package com.xiaohe66.common.net.req;
 
-import com.xiaohe66.common.net.AbstractCallback;
 import com.xiaohe66.common.util.JsonUtils;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -11,7 +10,7 @@ import okhttp3.RequestBody;
  * @author xiaohe
  * @time 2020.07.17 15:01
  */
-public abstract class RestJsonRequester<P, C extends AbstractCallback> extends RestRequester<P, C> {
+public abstract class RestJsonRequester<C, D, U, G, P, E> extends RestRequester<C, D, U, G, P, E> {
 
     protected static final MediaType jsonMediaType = MediaType.parse("application/json; charset=utf-8");
 
@@ -20,7 +19,7 @@ public abstract class RestJsonRequester<P, C extends AbstractCallback> extends R
     }
 
     @Override
-    protected Request buildPostRequest(P param) {
+    protected Request buildPostRequest(E param) {
 
         return new Request.Builder()
                 .url(baseUrl + queryUrl)
@@ -29,7 +28,7 @@ public abstract class RestJsonRequester<P, C extends AbstractCallback> extends R
     }
 
     @Override
-    protected Request buildPutRequest(P param) {
+    protected Request buildPutRequest(E param) {
 
         return new Request.Builder()
                 .url(baseUrl + queryUrl)
@@ -41,7 +40,7 @@ public abstract class RestJsonRequester<P, C extends AbstractCallback> extends R
         return RequestBody.create(json, jsonMediaType);
     }
 
-    protected RequestBody createJsonBody(P param) {
+    protected RequestBody createJsonBody(E param) {
         return RequestBody.create(JsonUtils.toString(param), jsonMediaType);
     }
 }
