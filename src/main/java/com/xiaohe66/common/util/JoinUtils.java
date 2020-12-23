@@ -2,7 +2,9 @@ package com.xiaohe66.common.util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author xiaohe
@@ -107,4 +109,9 @@ public class JoinUtils {
         return obj == null ? "" : obj.toString();
     }
 
+    public static String join(List<Object> list){
+        return list.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+    }
 }
