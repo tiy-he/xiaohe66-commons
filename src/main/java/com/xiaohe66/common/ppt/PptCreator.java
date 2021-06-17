@@ -1,6 +1,7 @@
 package com.xiaohe66.common.ppt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.xiaohe66.common.ppt.data.PptData;
 import com.xiaohe66.common.ppt.data.PptPageData;
 import com.xiaohe66.common.ppt.data.PptPageItemData;
 import com.xiaohe66.common.ppt.template.PptTemplate;
@@ -40,7 +41,12 @@ public class PptCreator {
 
     public void generateToOutputStream(OutputStream outputStream, String json) throws IOException, JsonProcessingException {
 
-        List<PptPageData> dataList = PptResolver.parsePptData(json).getPageDataList();
+        generateToOutputStream(outputStream, PptResolver.parsePptData(json));
+    }
+
+    public void generateToOutputStream(OutputStream outputStream, PptData data) throws IOException {
+
+        List<PptPageData> dataList = data.getPageDataList();
         List<PptTemplatePage> pageList = template.getTemplatePageList();
 
         XMLSlideShow ppt = template.copyPpt();

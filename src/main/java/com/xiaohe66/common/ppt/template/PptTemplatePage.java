@@ -20,11 +20,12 @@ import java.util.Set;
  * @author xiaohe
  * @time 2021.06.11 14:00
  */
-@Getter
 public class PptTemplatePage {
 
+    @Getter
     final XSLFSlide slide;
 
+    @Getter
     final XSLFSlideLayout layout;
 
     /**
@@ -107,14 +108,6 @@ public class PptTemplatePage {
             List<PptTemplateItem> list = shapeMap.computeIfAbsent(templateShape.getName(), key -> new ArrayList<>());
             list.add(templateShape);
         }
-    }
-
-    public XSLFSlide getSlide() {
-        return slide;
-    }
-
-    public XSLFSlideLayout getLayout() {
-        return layout;
     }
 
     public List<PptTemplateItem> get(String name) {
