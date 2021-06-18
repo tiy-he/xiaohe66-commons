@@ -31,7 +31,7 @@ public class PptTemplatePage {
     /**
      * 若一个文本框里面存在多个 ${}, 则一个文本框会存保存多次
      */
-    final Map<String, List<PptTemplateItem>> shapeMap = new HashMap<>();
+    final Map<String, List<AbstractPptTemplateItem>> shapeMap = new HashMap<>();
 
     public PptTemplatePage(XSLFSlide slide) {
         this.slide = slide;
@@ -68,8 +68,8 @@ public class PptTemplatePage {
         }
 
         // 3. 重排序
-        for (Map.Entry<String, List<PptTemplateItem>> entry : shapeMap.entrySet()) {
-            List<PptTemplateItem> list = entry.getValue();
+        for (Map.Entry<String, List<AbstractPptTemplateItem>> entry : shapeMap.entrySet()) {
+            List<AbstractPptTemplateItem> list = entry.getValue();
             list.sort(null);
         }
 
@@ -90,7 +90,7 @@ public class PptTemplatePage {
 
                 PptTemplateText templateText = new PptTemplateText(textShape, name, index);
 
-                List<PptTemplateItem> list = shapeMap.computeIfAbsent(name, key -> new ArrayList<>());
+                List<AbstractPptTemplateItem> list = shapeMap.computeIfAbsent(name, key -> new ArrayList<>());
                 list.add(templateText);
             }
         }
@@ -105,16 +105,16 @@ public class PptTemplatePage {
             PptTemplateImage templateShape = new PptTemplateImage(shape, name);
             slide.removeShape(shape);
 
-            List<PptTemplateItem> list = shapeMap.computeIfAbsent(templateShape.getName(), key -> new ArrayList<>());
+            List<AbstractPptTemplateItem> list = shapeMap.computeIfAbsent(templateShape.getName(), key -> new ArrayList<>());
             list.add(templateShape);
         }
     }
 
-    public List<PptTemplateItem> get(String name) {
+    public List<AbstractPptTemplateItem> get(String name) {
         return shapeMap.get(name);
     }
 
-    public Set<Map.Entry<String, List<PptTemplateItem>>> entrySet() {
+    public Set<Map.Entry<String, List<AbstractPptTemplateItem>>> entrySet() {
         return shapeMap.entrySet();
     }
 }

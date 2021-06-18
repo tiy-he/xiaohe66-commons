@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author xiaohe
  * @time 2021.06.11 14:00
  */
-public class PptTemplateImage extends PptTemplateItem implements Comparable<PptTemplateImage> {
+public class PptTemplateImage extends AbstractPptTemplateItem {
 
     final XSLFShape shape;
     final Rectangle2D anchor;
@@ -41,10 +41,14 @@ public class PptTemplateImage extends PptTemplateItem implements Comparable<PptT
     }
 
     @Override
-    public int compareTo(@NotNull PptTemplateImage o) {
-        return o.x == this.x ?
-                o.y - this.y :
-                o.x - this.x;
+    public int compareTo(@NotNull AbstractPptTemplateItem o) {
+        if (o instanceof PptTemplateImage) {
+            PptTemplateImage o1 = (PptTemplateImage) o;
+            return o1.x == this.x ?
+                    o1.y - this.y :
+                    o1.x - this.x;
+        }
+        return 1;
     }
 
     @Override

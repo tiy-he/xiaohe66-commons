@@ -6,12 +6,13 @@ import com.xiaohe66.common.ppt.data.PptPageData;
 import com.xiaohe66.common.ppt.data.PptPageItemData;
 import com.xiaohe66.common.ppt.template.PptTemplate;
 import com.xiaohe66.common.ppt.template.PptTemplateImage;
-import com.xiaohe66.common.ppt.template.PptTemplateItem;
+import com.xiaohe66.common.ppt.template.AbstractPptTemplateItem;
 import com.xiaohe66.common.ppt.template.PptTemplatePage;
 import com.xiaohe66.common.ppt.template.PptTemplateText;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.sl.usermodel.PictureData;
+import org.apache.poi.xddf.usermodel.text.XDDFTextBody;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFPictureData;
 import org.apache.poi.xslf.usermodel.XSLFPictureShape;
@@ -83,7 +84,7 @@ public class PptCreator {
 
         for (Map.Entry<String, List<String>> entry : itemData.entrySet()) {
 
-            List<PptTemplateItem> itemList = page.get(entry.getKey());
+            List<AbstractPptTemplateItem> itemList = page.get(entry.getKey());
 
             if (itemList == null) {
                 log.warn("模板中不存在指定的key : {}", entry.getKey());
@@ -99,9 +100,9 @@ public class PptCreator {
                 }
 
                 String value = valueList.get(i);
-                PptTemplateItem item = itemList.get(i);
+                AbstractPptTemplateItem item = itemList.get(i);
 
-                if (item.getType() == PptTemplateItem.Type.TEXT) {
+                if (item.getType() == AbstractPptTemplateItem.Type.TEXT) {
 
                     replaceText(slide, (PptTemplateText) item, value);
                 } else {
@@ -127,10 +128,16 @@ public class PptCreator {
 
         String text = StringUtils.replaceOnce(textShape.getText(), templateText.getReplaceName(), value);
 
-        textShape.setText(text);
+        // note : 若使用 textShape#setText 替换，则会丢失格式
+        XDDFTextBody textBody = textShape.getTextBody();
+        textBody.setText(text);
     }
 
     protected void replaceImage(XMLSlideShow ppt, XSLFSlide slide, PptTemplateImage templateImage, String value) throws IOException {
+
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
 
         URL url = new URL(value);
 

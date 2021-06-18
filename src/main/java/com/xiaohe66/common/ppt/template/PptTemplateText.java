@@ -8,7 +8,7 @@ import org.apache.poi.xslf.usermodel.XSLFTextShape;
  * @author xiaohe
  * @time 2021.06.11 16:48
  */
-public class PptTemplateText extends PptTemplateItem {
+public class PptTemplateText extends AbstractPptTemplateItem {
 
     final XSLFTextShape shape;
     final String text;
@@ -31,6 +31,14 @@ public class PptTemplateText extends PptTemplateItem {
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public int compareTo(AbstractPptTemplateItem o) {
+        if (o instanceof PptTemplateText) {
+            return super.compareTo(o);
+        }
+        return -1;
     }
 
     @Override
