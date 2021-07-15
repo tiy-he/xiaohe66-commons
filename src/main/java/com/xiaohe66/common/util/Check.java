@@ -24,11 +24,11 @@ public class Check {
         return obj != null && obj.length() != 0;
     }
 
-    public static boolean isNotEmpty(Collection obj) {
+    public static boolean isNotEmpty(Collection<?> obj) {
         return obj != null && !obj.isEmpty();
     }
 
-    public static boolean isNotEmpty(Map obj) {
+    public static boolean isNotEmpty(Map<?,?> obj) {
         return obj != null && !obj.isEmpty();
     }
 
@@ -44,11 +44,11 @@ public class Check {
         return obj == null || obj.length() == 0;
     }
 
-    public static boolean isEmpty(Collection obj) {
+    public static boolean isEmpty(Collection<?> obj) {
         return obj == null || obj.isEmpty();
     }
 
-    public static boolean isEmpty(Map obj) {
+    public static boolean isEmpty(Map<?,?> obj) {
         return obj == null || obj.isEmpty();
     }
 
@@ -64,13 +64,13 @@ public class Check {
         }
     }
 
-    public static void notEmpty(Collection obj) {
+    public static void notEmpty(Collection<?> obj) {
         if (obj == null || obj.isEmpty()) {
             threadEx();
         }
     }
 
-    public static void notEmpty(Map obj) {
+    public static void notEmpty(Map<?,?> obj) {
         if (obj == null || obj.isEmpty()) {
             threadEx();
         }
@@ -94,13 +94,13 @@ public class Check {
         }
     }
 
-    public static void notEmpty(Collection obj, String paramName) {
+    public static void notEmpty(Collection<?> obj, String paramName) {
         if (obj == null || obj.isEmpty()) {
             threadEx(paramName);
         }
     }
 
-    public static void notEmpty(Map obj, String paramName) {
+    public static void notEmpty(Map<?,?> obj, String paramName) {
         if (obj == null || obj.isEmpty()) {
             threadEx(paramName);
         }
