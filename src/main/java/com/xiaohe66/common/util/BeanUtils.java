@@ -85,4 +85,13 @@ public class BeanUtils {
         }
     }
 
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> cls) {
+
+        // 使用 apche 的 commons 包
+        //T object = cls.newInstance();
+        //org.apache.commons.beanutils.BeanUtils.populate(object,map)
+
+        throw new UnsupportedOperationException();
+    }
+
 }
