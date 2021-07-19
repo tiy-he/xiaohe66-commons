@@ -1,6 +1,6 @@
 package com.xiaohe66.common.net.req;
 
-import com.xiaohe66.common.util.JsonUtils;
+import com.xiaohe66.common.util.GsonUtils;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,6 +41,6 @@ public abstract class RestJsonRequester<C, D, U, G, P, E> extends RestRequester<
     }
 
     protected RequestBody createJsonBody(E param) {
-        return RequestBody.create(JsonUtils.toString(param), jsonMediaType);
+        return RequestBody.create(GsonUtils.toString(param), jsonMediaType);
     }
 }

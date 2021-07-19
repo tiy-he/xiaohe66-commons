@@ -5,7 +5,7 @@ import com.xiaohe66.common.net.IRequesterCallback;
 import com.xiaohe66.common.net.ex.RequesterException;
 import com.xiaohe66.common.net.ex.RequesterHttpCodeException;
 import com.xiaohe66.common.net.ex.RequesterJsonSyntaxException;
-import com.xiaohe66.common.util.JsonUtils;
+import com.xiaohe66.common.util.GsonUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -84,7 +84,7 @@ public abstract class AbstractHttpRequester<P, R> implements IHttpRequester<P, R
         }
 
         try {
-            return JsonUtils.formatObject(bodyString, beanType);
+            return GsonUtils.formatObject(bodyString, beanType);
 
         } catch (JsonSyntaxException e) {
             throw new RequesterJsonSyntaxException("cannot syntax json", bodyString);

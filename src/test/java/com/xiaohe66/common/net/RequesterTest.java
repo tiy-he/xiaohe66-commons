@@ -2,7 +2,7 @@ package com.xiaohe66.common.net;
 
 import com.xiaohe66.common.net.ex.RequesterException;
 import com.xiaohe66.common.net.xh.Page;
-import com.xiaohe66.common.util.JsonUtils;
+import com.xiaohe66.common.util.GsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
 import org.junit.Test;
@@ -36,7 +36,7 @@ public class RequesterTest {
         requester.get(1, new IRequesterCallback<XhRequesterResult>() {
             @Override
             public void onSuccess(Call call, XhRequesterResult bean) {
-                log.info(JsonUtils.toString(bean));
+                log.info(GsonUtils.toString(bean));
                 countDownLatch.countDown();
             }
 
@@ -62,7 +62,7 @@ public class RequesterTest {
         requester.post(param, new IRequesterCallback<Integer>() {
             @Override
             public void onSuccess(Call call, Integer bean) {
-                log.info(JsonUtils.toString(bean));
+                log.info(GsonUtils.toString(bean));
                 countDownLatch.countDown();
             }
 
@@ -87,7 +87,7 @@ public class RequesterTest {
         requester.put(param, new IRequesterCallback<Boolean>() {
             @Override
             public void onSuccess(Call call, Boolean bean) {
-                log.info(JsonUtils.toString(bean));
+                log.info(GsonUtils.toString(bean));
                 countDownLatch.countDown();
             }
 
@@ -114,7 +114,7 @@ public class RequesterTest {
         requester.delete(1, new IRequesterCallback<Boolean>() {
             @Override
             public void onSuccess(Call call, Boolean bean) {
-                log.info(JsonUtils.toString(bean));
+                log.info(GsonUtils.toString(bean));
                 countDownLatch.countDown();
             }
 
@@ -135,7 +135,7 @@ public class RequesterTest {
 
         try {
             Page<XhRequesterResult> page = requester.page(param, 1, 10);
-            log.info("sync result : {}", JsonUtils.toString(page));
+            log.info("sync result : {}", GsonUtils.toString(page));
         } catch (RequesterException e) {
             // holder ex
         }
@@ -143,7 +143,7 @@ public class RequesterTest {
         requester.page(param, 1, 10, new IRequesterCallback<Page<XhRequesterResult>>() {
             @Override
             public void onSuccess(Call call, Page<XhRequesterResult> bean) {
-                log.info(JsonUtils.toString(bean));
+                log.info(GsonUtils.toString(bean));
                 countDownLatch.countDown();
             }
 

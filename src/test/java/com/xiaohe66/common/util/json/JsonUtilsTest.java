@@ -1,7 +1,7 @@
 package com.xiaohe66.common.util.json;
 
 import com.xiaohe66.common.net.xh.Result;
-import com.xiaohe66.common.util.JsonUtils;
+import com.xiaohe66.common.util.GsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -26,10 +26,10 @@ public class JsonUtilsTest {
         result.setMsg("msg");
 
         result.setData(new JsonUtilsTestObj("测试名称"));
-        String json = JsonUtils.toString(result);
+        String json = GsonUtils.toString(result);
 
         log.info("format json : {}", json);
-        Result<JsonUtilsTestObj> formatResult = JsonUtils.formatResult(json, JsonUtilsTestObj.class);
+        Result<JsonUtilsTestObj> formatResult = GsonUtils.formatResult(json, JsonUtilsTestObj.class);
         log.info("format结果 : {}", formatResult);
 
         assertEquals(result, formatResult);
@@ -43,10 +43,10 @@ public class JsonUtilsTest {
         result.setMsg("msg");
         result.setData(new JsonUtilsTestObj("测试名称"));
 
-        String json = JsonUtils.toString(result);
+        String json = GsonUtils.toString(result);
 
         log.info("format json : {}", json);
-        Result<String> formatResult = JsonUtils.formatResult(json, String.class);
+        Result<String> formatResult = GsonUtils.formatResult(json, String.class);
         log.info("format结果 : {}", formatResult);
 
         result.setData("{\"name\":\"测试名称\"}");
@@ -65,10 +65,10 @@ public class JsonUtilsTest {
         List<JsonUtilsTestObj> list = Collections.singletonList(new JsonUtilsTestObj("测试数组"));
         result.setData(list);
 
-        String json = JsonUtils.toString(result);
+        String json = GsonUtils.toString(result);
 
         log.info("format json : {}", json);
-        Result<List<JsonUtilsTestObj>> formatResult = JsonUtils.formatResultList(json, JsonUtilsTestObj.class);
+        Result<List<JsonUtilsTestObj>> formatResult = GsonUtils.formatResultList(json, JsonUtilsTestObj.class);
         log.info("format结果 : {}", formatResult);
 
         assertEquals(result, formatResult);

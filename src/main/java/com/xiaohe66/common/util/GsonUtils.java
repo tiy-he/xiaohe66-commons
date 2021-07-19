@@ -5,10 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.xiaohe66.common.gson.GsonLocalDateDeserializer;
-import com.xiaohe66.common.gson.GsonLocalDateTimeDeserializer;
-import com.xiaohe66.common.gson.GsonResultDeserializer;
-import com.xiaohe66.common.gson.GsonStringDeserializer;
+import com.xiaohe66.common.util.gson.GsonLocalDateDeserializer;
+import com.xiaohe66.common.util.gson.GsonLocalDateTimeDeserializer;
+import com.xiaohe66.common.util.gson.GsonResultDeserializer;
+import com.xiaohe66.common.util.gson.GsonStringDeserializer;
 import com.xiaohe66.common.net.xh.Result;
 import com.xiaohe66.common.reflect.ParamType;
 import org.slf4j.Logger;
@@ -25,9 +25,9 @@ import java.util.List;
  * @author xiaohe
  * @time 2019-10-29 18:13
  */
-public class JsonUtils {
+public class GsonUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(JsonUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(GsonUtils.class);
 
     private static final Gson gson;
 
@@ -49,7 +49,7 @@ public class JsonUtils {
         gson = builder.create();
     }
 
-    private JsonUtils() {
+    private GsonUtils() {
     }
 
     /**

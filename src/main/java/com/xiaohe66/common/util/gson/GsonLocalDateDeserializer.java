@@ -1,4 +1,4 @@
-package com.xiaohe66.common.gson;
+package com.xiaohe66.common.util.gson;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
