@@ -1,6 +1,5 @@
 package com.xiaohe66.common.util.rsa;
 
-import com.xiaohe66.common.model.RsaKey;
 import com.xiaohe66.common.util.RsaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -24,7 +23,7 @@ public class RsaUtilsTest {
     @Before
     public void before() {
 
-        RsaKey key = RsaUtils.createKey();
+        RsaUtils.RsaKey key = RsaUtils.createKey();
         log.info("privateKey : {}", key.getPrivateKey());
         log.info("publicKey : {}", key.getPublicKey());
 

@@ -1,7 +1,8 @@
 package com.xiaohe66.common.util;
 
 import com.xiaohe66.common.ex.XhRuntimeException;
-import com.xiaohe66.common.model.RsaKey;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.Cipher;
@@ -174,4 +175,12 @@ public class RsaUtils {
         }
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class RsaKey {
+
+        private String privateKey;
+        private String publicKey;
+
+    }
 }
