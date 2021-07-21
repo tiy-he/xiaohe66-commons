@@ -2,6 +2,7 @@ package com.xiaohe66.common.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -100,7 +101,6 @@ public class JsonUtilsTest {
     }
 
     @Test
-
     public void testFormatObject4() throws JsonProcessingException {
 
         List<User> userList = Collections.singletonList(originUser);
@@ -123,6 +123,20 @@ public class JsonUtilsTest {
         assertEquals(correctResult, retObject);
     }
 
+    @Test
+    public void test5() throws JsonProcessingException {
+
+        ObjectNode jsonNodes = JsonUtils.formatObjectNode(originUser);
+
+        jsonNodes.fields().forEachRemaining(entry -> {
+
+            if (!entry.getValue().isNull()) {
+
+                log.info("{} : {}", entry.getKey(), entry.getValue().asText());
+            }
+        });
+
+    }
 
     @Data
     @EqualsAndHashCode

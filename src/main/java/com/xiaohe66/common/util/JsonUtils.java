@@ -8,9 +8,12 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -102,6 +105,40 @@ public class JsonUtils {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, cls);
 
         return objectMapper.readValue(json, javaType);
+    }
+
+    public static ObjectNode formatObjectNode(String json) throws JsonProcessingException {
+
+        JsonNode jsonNode = objectMapper.readTree(json);
+
+        if (jsonNode.isObject()) {
+            return (ObjectNode) jsonNode;
+        }
+
+        throw new IllegalArgumentException("json is not ObjectNode");
+    }
+
+    public static ObjectNode formatObjectNode(Object object) throws JsonProcessingException {
+
+        String json = objectMapper.writeValueAsString(object);
+        return formatObjectNode(json);
+    }
+
+    public static ArrayNode formatArrayNode(String json) throws JsonProcessingException {
+
+        JsonNode jsonNode = objectMapper.readTree(json);
+
+        if (jsonNode.isArray()) {
+            return (ArrayNode) jsonNode;
+        }
+
+        throw new IllegalArgumentException("json is not ArrayNode");
+    }
+
+    public static ArrayNode formatArrayNode(Object object) throws JsonProcessingException {
+
+        String json = objectMapper.writeValueAsString(object);
+        return formatArrayNode(json);
     }
 
 
