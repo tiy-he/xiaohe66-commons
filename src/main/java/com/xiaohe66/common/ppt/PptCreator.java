@@ -4,15 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.xiaohe66.common.ppt.data.PptData;
 import com.xiaohe66.common.ppt.data.PptPageData;
 import com.xiaohe66.common.ppt.data.PptPageItemData;
+import com.xiaohe66.common.ppt.template.AbstractPptTemplateItem;
 import com.xiaohe66.common.ppt.template.PptTemplate;
 import com.xiaohe66.common.ppt.template.PptTemplateImage;
-import com.xiaohe66.common.ppt.template.AbstractPptTemplateItem;
 import com.xiaohe66.common.ppt.template.PptTemplatePage;
 import com.xiaohe66.common.ppt.template.PptTemplateText;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.sl.usermodel.PictureData;
 import org.apache.poi.xddf.usermodel.text.XDDFTextBody;
+import org.apache.poi.xddf.usermodel.text.XDDFTextParagraph;
+import org.apache.poi.xddf.usermodel.text.XDDFTextRun;
 import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFPictureData;
 import org.apache.poi.xslf.usermodel.XSLFPictureShape;
@@ -42,11 +44,19 @@ public class PptCreator {
 
     public void generateToOutputStream(OutputStream outputStream, String json) throws IOException, JsonProcessingException {
 
-        generateToOutputStream(outputStream, PptResolver.parsePptData(json));
+        generate(json).write(outputStream);
     }
 
     public void generateToOutputStream(OutputStream outputStream, PptData data) throws IOException {
 
+        generate(data).write(outputStream);
+    }
+
+    public XMLSlideShow generate(String json) throws IOException, JsonProcessingException {
+        return generate(PptResolver.parsePptData(json));
+    }
+
+    public XMLSlideShow generate(PptData data) throws IOException {
         List<PptPageData> dataList = data.getPageDataList();
         List<PptTemplatePage> pageList = template.getTemplatePageList();
 
@@ -65,8 +75,7 @@ public class PptCreator {
             // note : 删除PPT的模板页，删除第0页后，第1页就会变成第0页。
             ppt.removeSlide(0);
         }
-
-        ppt.write(outputStream);
+        return ppt;
     }
 
     protected void copyPage(XMLSlideShow ppt, PptPageData pageData, PptTemplatePage page) throws IOException {
@@ -126,11 +135,37 @@ public class PptCreator {
 
         XSLFTextShape textShape = (XSLFTextShape) shape;
 
-        String text = StringUtils.replaceOnce(textShape.getText(), templateText.getReplaceName(), value);
+        String replaceName = templateText.getReplaceName();
 
-        // note : 若使用 textShape#setText 替换，则会丢失格式
         XDDFTextBody textBody = textShape.getTextBody();
-        textBody.setText(text);
+
+        List<XDDFTextParagraph> textParagraphList = textBody.getParagraphs();
+
+        for (XDDFTextParagraph textParagraph : textParagraphList) {
+
+            // 一个 XDDFTextRun 表示文本框中每一段不同格式的文字，若存在混合文字的情况，则会有多个该对象
+            List<XDDFTextRun> textRuns = textParagraph.getTextRuns();
+
+            for (XDDFTextRun textRun : textRuns) {
+
+                String originText = textRun.getText();
+
+                if (originText.contains(replaceName)) {
+
+                    String text = StringUtils.replaceOnce(originText, replaceName, value);
+                    textRun.setText(text);
+                    return;
+                }
+            }
+        }
+
+        String originText = textShape.getText();
+        if (originText.contains(replaceName)) {
+
+            // 当不存在多个拆分格式时，尝试替换完整的
+            String text = StringUtils.replaceOnce(originText, replaceName, value);
+            textBody.setText(text);
+        }
     }
 
     protected void replaceImage(XMLSlideShow ppt, XSLFSlide slide, PptTemplateImage templateImage, String value) throws IOException {
