@@ -109,10 +109,18 @@ public class JsonUtils {
 
     public static ObjectNode formatObjectNode(String json) throws JsonProcessingException {
 
+        if (json == null) {
+            return objectMapper.createObjectNode();
+        }
+
         JsonNode jsonNode = objectMapper.readTree(json);
 
         if (jsonNode.isObject()) {
             return (ObjectNode) jsonNode;
+        }
+
+        if(jsonNode.isNull()){
+            return objectMapper.createObjectNode();
         }
 
         throw new IllegalArgumentException("json is not ObjectNode");
