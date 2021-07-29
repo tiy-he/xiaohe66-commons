@@ -32,7 +32,16 @@ public interface IApiClient {
      * @return 结果实体
      * @throws ApiException 当请求发生异常时抛出
      */
-    <T extends BaseApiResponse> T execute(IApiRequest<T> request) throws ApiException;
+    default <T extends BaseApiResponse> T execute(IApiRequest<T> request) throws ApiException {
+        String body = executeAsString(request);
+
+        try {
+            return request.buildResponseBody(body);
+
+        } catch (Exception e) {
+            throw new ApiException("buildResponseBody error, responseString : " + body, e);
+        }
+    }
 
     /**
      * 执行异步请求，将结果以实体类返回

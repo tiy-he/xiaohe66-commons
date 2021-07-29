@@ -31,14 +31,6 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
         this.baseUrl = baseUrl;
     }
 
-    @Override
-    public <T extends BaseApiResponse> T execute(IApiRequest<T> request) throws ApiException {
-
-        String body = executeAsString(request);
-
-        return request.buildResponseBody(body);
-    }
-
     /**
      * 执行异步请求，将结果以实体类返回
      *
