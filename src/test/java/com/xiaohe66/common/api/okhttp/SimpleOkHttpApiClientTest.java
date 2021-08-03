@@ -27,7 +27,7 @@ public class SimpleOkHttpApiClientTest {
             public String executeAsString(IApiRequest<?> apiRequest) throws ApiException {
                 Request request = buildRequest(apiRequest);
 
-                log.info("request : {}", JsonUtils.toJson(apiRequest));
+                log.info("request : {}", JsonUtils.toString(apiRequest));
                 log.info("url : {}", request.url());
 
                 String bodyString = "";
@@ -52,7 +52,7 @@ public class SimpleOkHttpApiClientTest {
             @Override
             protected void doExecuteAsync(IApiRequest<?> apiRequest, okhttp3.Callback callback) throws ApiException {
 
-                log.info("request : {}", JsonUtils.toJson(apiRequest));
+                log.info("request : {}", JsonUtils.toString(apiRequest));
 
                 Callback callback1 = (Callback) callback;
 

@@ -35,7 +35,7 @@ public class JsonUtilsTest {
 
         originUser.date = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute(), now.getSecond());
 
-        String json = JsonUtils.toJson(originUser);
+        String json = JsonUtils.toString(originUser);
 
         User user = JsonUtils.formatObject(json, User.class);
 
@@ -47,7 +47,7 @@ public class JsonUtilsTest {
         list.add(this.originUser);
         list.add(this.originUser);
 
-        String listJson = JsonUtils.toJson(list);
+        String listJson = JsonUtils.toString(list);
 
         assertEquals(list, JsonUtils.formatListObject(listJson, User.class));
 
@@ -60,7 +60,7 @@ public class JsonUtilsTest {
         list.add(this.originUser);
         list.add(this.originUser);
 
-        String listJson = JsonUtils.toJson(list);
+        String listJson = JsonUtils.toString(list);
 
         List<User> retList = JsonUtils.formatObject(listJson, new TypeReference<List<User>>() {
         });
@@ -86,7 +86,7 @@ public class JsonUtilsTest {
         originObject.setData(originUser);
         originObject.setCode(50);
 
-        String originJson = JsonUtils.toJson(originObject);
+        String originJson = JsonUtils.toString(originObject);
 
         log.info("originJson : {}", originJson);
 
@@ -95,7 +95,7 @@ public class JsonUtilsTest {
 
         Result<String> correctResult = new Result<>();
         correctResult.setCode(50);
-        correctResult.setData(JsonUtils.toJson(originUser));
+        correctResult.setData(JsonUtils.toString(originUser));
 
         assertEquals(correctResult, retObject);
     }
@@ -109,7 +109,7 @@ public class JsonUtilsTest {
         originObject.setCode(50);
         originObject.setData(userList);
 
-        String originJson = JsonUtils.toJson(originObject);
+        String originJson = JsonUtils.toString(originObject);
 
         log.info("originJson : {}", originJson);
 
@@ -118,7 +118,7 @@ public class JsonUtilsTest {
 
         Result<String> correctResult = new Result<>();
         correctResult.setCode(50);
-        correctResult.setData(JsonUtils.toJson(userList));
+        correctResult.setData(JsonUtils.toString(userList));
 
         assertEquals(correctResult, retObject);
     }

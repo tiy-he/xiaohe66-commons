@@ -77,14 +77,14 @@ public class JsonUtils {
 
     }
 
-    public static String toJson(Object object) {
+    public static String toString(Object object) {
         try {
             return objectMapper.writeValueAsString(object);
 
         } catch (JsonProcessingException e) {
 
             // 当传入的类没有实现 get 方法时，便会抛出该异常
-            throw new IllegalStateException("toJson error", e);
+            throw new IllegalStateException("toString error", e);
         }
     }
 
