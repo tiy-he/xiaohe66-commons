@@ -38,6 +38,9 @@ public interface IApiClient {
         try {
             return request.buildResponseBody(body);
 
+        } catch (ApiException e) {
+            throw e;
+
         } catch (Exception e) {
             throw new ApiException("buildResponseBody error, responseString : " + body, e);
         }
