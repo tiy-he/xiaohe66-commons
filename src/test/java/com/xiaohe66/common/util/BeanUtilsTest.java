@@ -2,20 +2,24 @@ package com.xiaohe66.common.util;
 
 import com.xiaohe66.common.bean.BeanFieldIgnore;
 import com.xiaohe66.common.bean.BeanFieldName;
-import org.apache.commons.collections4.map.HashedMap;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BeanUtilsTest {
 
     private static final Logger log = LoggerFactory.getLogger(BeanUtilsTest.class);
 
-    private static class TestObj{
+    @EqualsAndHashCode
+    @ToString
+    public static class TestObj {
 
         private String name;
 
@@ -41,23 +45,43 @@ public class BeanUtilsTest {
         testObj.ignore = "field ignore";
         testObj.rename = "field rename";
 
-        Map<String,Object> correctMap = new HashedMap<>();
-        correctMap.put("code",100);
-        correctMap.put("newName","field rename");
-        correctMap.put("data","field data");
-        correctMap.put("name","field name");
+        Map<String, Object> correctMap = new HashMap<>();
+        correctMap.put("code", 100);
+        correctMap.put("newName", "field rename");
+        correctMap.put("data", "field data");
+        correctMap.put("name", "field name");
 
         log.info("first toMap");
         Map<String, Object> result = BeanUtils.toMap(testObj);
-        log.info("BeanUtils toMap result : {}",result);
-        assertEquals(correctMap,result);
+        log.info("BeanUtils toMap result : {}", result);
+        assertEquals(correctMap, result);
 
         testObj.data = "new Data";
-        correctMap.put("data","new Data");
+        correctMap.put("data", "new Data");
         log.info("second toMap");
         result = BeanUtils.toMap(testObj);
-        log.info("BeanUtils toMap result : {}",result);
-        assertEquals(correctMap,result);
+        log.info("BeanUtils toMap result : {}", result);
+        assertEquals(correctMap, result);
+    }
+
+    @Test
+    public void test2() {
+
+        TestObj correctObject = new TestObj();
+        correctObject.name = "field name";
+        correctObject.code = 100;
+        correctObject.data = "field data";
+        correctObject.rename = "field rename";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 100);
+        map.put("newName", "field rename");
+        map.put("data", "field data");
+        map.put("name", "field name");
+
+        TestObj object = BeanUtils.mapToBean(map, TestObj.class);
+
+        assertEquals(correctObject, object);
 
     }
 }

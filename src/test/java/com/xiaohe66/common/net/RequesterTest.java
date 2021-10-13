@@ -1,11 +1,9 @@
 package com.xiaohe66.common.net;
 
 import com.xiaohe66.common.net.ex.RequesterException;
-import com.xiaohe66.common.net.xh.Page;
 import com.xiaohe66.common.util.GsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Call;
-import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -23,7 +21,7 @@ public class RequesterTest {
 
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    @Test
+    //@Test
     public void test1() throws InterruptedException {
 
         try {
@@ -49,7 +47,7 @@ public class RequesterTest {
         countDownLatch.await();
     }
 
-    @Test
+    //@Test
     public void test2() throws InterruptedException {
 
         try {
@@ -74,7 +72,7 @@ public class RequesterTest {
         countDownLatch.await();
     }
 
-    @Test
+    //@Test
     public void test3() throws InterruptedException {
 
         try {
@@ -101,7 +99,7 @@ public class RequesterTest {
     }
 
 
-    @Test
+    //@Test
     public void test4() throws InterruptedException {
 
         try {
@@ -129,7 +127,7 @@ public class RequesterTest {
     }
 
 
-    @Test
+    //@Test
     public void test5() throws InterruptedException {
 
 

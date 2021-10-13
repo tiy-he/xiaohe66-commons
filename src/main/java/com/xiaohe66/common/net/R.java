@@ -12,7 +12,7 @@ public class R<T> {
     public static final int SUCCESS_CODE = 10000;
     public static final int ERROR_CODE = -1;
 
-    public static final R<Void> SUCCESS = R.ok();
+    public static final R<Void> SUCCESS = R.ok(null);
     public static final R<Void> FAIL = R.err("");
 
     private int code;
@@ -25,12 +25,16 @@ public class R<T> {
         this.msg = msg;
     }
 
+    public boolean isSuccess() {
+        return code == SUCCESS_CODE;
+    }
+
     public static R<Void> ok() {
         return SUCCESS;
     }
 
     public static <T> R<T> ok(T data) {
-        return new R<>(SUCCESS_CODE, data, null);
+        return new R<>(SUCCESS_CODE, data, "");
     }
 
     public static <T> R<T> ok(T data, String msg) {

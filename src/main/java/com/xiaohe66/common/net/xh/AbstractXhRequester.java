@@ -1,5 +1,6 @@
 package com.xiaohe66.common.net.xh;
 
+import com.xiaohe66.common.net.Page;
 import com.xiaohe66.common.net.ex.RequesterException;
 import com.xiaohe66.common.net.ex.RequesterResultCodeException;
 import com.xiaohe66.common.net.req.RestFormRequester;

@@ -85,13 +85,36 @@ public class BeanUtils {
         }
     }
 
-    public static <T> T mapToBean(Map<String, Object> map, Class<T> cls) {
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanCls) {
 
-        // 使用 apche 的 commons 包
-        //T object = cls.newInstance();
-        //org.apache.commons.beanutils.BeanUtils.populate(object,map)
+        T object;
+        try {
+            object = beanCls.newInstance();
 
-        throw new UnsupportedOperationException();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalArgumentException("cannot instance class :" + beanCls.getName(), e);
+        }
+
+        List<BeanField> beanFieldList = cache.get(beanCls);
+
+        for (BeanField beanField : beanFieldList) {
+
+            Object value = map.get(beanField.getName());
+
+            // TODO : 检查类型是否相同
+            if (value != null) {
+
+                Field field = beanField.getField();
+                try {
+                    field.set(object, value);
+
+                } catch (IllegalAccessException e) {
+                    log.error("set Field value error, className :  {}, fieldName : {}", beanCls.getName(), field.getName());
+                }
+            }
+        }
+
+        return object;
     }
 
 }

@@ -3,9 +3,8 @@ package com.xiaohe66.common.bean;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.xiaohe66.common.ex.XhRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -18,9 +17,8 @@ import java.util.concurrent.TimeUnit;
  * @author xiaohe
  * @time 2020.07.20 10:49
  */
+@Slf4j
 public class BeanFieldCache {
-
-    private static final Logger log = LoggerFactory.getLogger(BeanFieldCache.class);
 
     private final Cache<String, List<BeanField>> cache;
 
