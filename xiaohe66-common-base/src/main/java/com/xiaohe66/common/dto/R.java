@@ -16,14 +16,14 @@ public class R<T> {
     public static final int SUCCESS_CODE = 10000;
     public static final int ERROR_CODE = -1;
 
-    public static final R<Void> SUCCESS = R.ok(null);
-    public static final R<Void> FAIL = R.err("");
+    public static final R<?> SUCCESS = R.ok(null);
+    public static final R<?> FAIL = R.err("");
 
     private int code;
     private String msg;
     private T data;
 
-    public R(){
+    public R() {
 
     }
 
@@ -37,8 +37,9 @@ public class R<T> {
         return code == SUCCESS_CODE;
     }
 
-    public static R<Void> ok() {
-        return SUCCESS;
+    @SuppressWarnings("unchecked")
+    public static <T> R<T> ok() {
+        return (R<T>) SUCCESS;
     }
 
     public static <T> R<T> ok(T data) {
@@ -49,15 +50,16 @@ public class R<T> {
         return new R<>(SUCCESS_CODE, data, msg);
     }
 
-    public static R<Void> err() {
-        return FAIL;
+    @SuppressWarnings("unchecked")
+    public static <T> R<T> err() {
+        return (R<T>) FAIL;
     }
 
-    public static R<Void> err(String msg) {
+    public static <T> R<T> err(String msg) {
         return new R<>(ERROR_CODE, null, msg);
     }
 
-    public static R<Void> build(int code, String msg) {
+    public static <T> R<T> build(int code, String msg) {
         return new R<>(code, null, msg);
     }
 
