@@ -6,6 +6,8 @@ module xiaohe.common.base {
     exports com.xiaohe66.common.util.concurrent;
     exports com.xiaohe66.common.util.gson;
 
+    opens com.xiaohe66.common.dto;
+
     requires static lombok;
     requires transitive org.slf4j;
 
@@ -17,6 +19,8 @@ module xiaohe.common.base {
     requires static com.google.gson;
     requires static com.google.common;
     requires static org.apache.commons.io;
+
+    requires static html2pdf;
 
 
 }

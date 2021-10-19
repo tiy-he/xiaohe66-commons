@@ -11,12 +11,15 @@
 
     <properties>
         <okhttp.version>4.9.2</okhttp.version>
+
         <slf4j-api.version>2.0.0-alpha5</slf4j-api.version>
+        <logback.version>1.3.0-alpha10</logback.version>
+
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <logback.version>1.2.3</logback.version>
         <jackson.version>2.12.3</jackson.version>
         <poi.version>5.0.0</poi.version>
         <lombok.version>1.18.22</lombok.version>
+        <itext.version>5.5.13.2</itext.version>
     </properties>
 
     <build>
@@ -79,8 +82,38 @@
             <dependency>
                 <groupId>com.xiaohe66</groupId>
                 <artifactId>xiaohe66-common-base</artifactId>
-                <version>0.0.1</version>
+                <version>1.0.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.xiaohe66</groupId>
+                <artifactId>xiaohe66-common-api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.xiaohe66</groupId>
+                <artifactId>xiaohe66-common-email</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <!--<dependency>
+                <groupId>com.xiaohe66</groupId>
+                <artifactId>xiaohe66-common-image</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.xiaohe66</groupId>
+                <artifactId>xiaohe66-common-ppt</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.xiaohe66</groupId>
+                <artifactId>xiaohe66-common-table</artifactId>
+                <version>1.0.0</version>
+            </dependency>-->
 
             <dependency>
                 <groupId>junit</groupId>
@@ -105,6 +138,12 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>28.1-jre</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>jsr305</artifactId>
+                        <groupId>com.google.code.findbugs</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -116,13 +155,6 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -151,6 +183,7 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>${poi.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
@@ -193,6 +226,20 @@
                 <artifactId>mail</artifactId>
                 <version>1.5.0-b01</version>
             </dependency>
+
+            <!--<dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itextpdf</artifactId>
+                <version>${itext.version}</version>
+            </dependency>-->
+
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>html2pdf</artifactId>
+                <version>3.0.5</version>
+                <scope>provided</scope>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
