@@ -12,7 +12,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -204,7 +203,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
          * @param e    IOException
          */
         @Override
-        default void onFailure(@NotNull Call call, IOException e) {
+        default void onFailure(Call call, IOException e) {
             onFail(new OkHttpApiException("request is failure", e));
         }
     }
@@ -219,7 +218,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
         }
 
         @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) {
+        public void onResponse(Call call, Response response) {
 
             try {
                 String responseString = getResponseString(response);
@@ -241,7 +240,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
          * @param response Response
          */
         @Override
-        default void onResponse(@NotNull Call call, @NotNull Response response) {
+        default void onResponse(Call call, Response response) {
 
             try {
                 String responseString = getResponseString(response);

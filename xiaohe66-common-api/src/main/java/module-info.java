@@ -8,6 +8,5 @@ module xiaohe.common.api {
     requires transitive xiaohe.common.base;
 
     requires transitive okhttp3;
-    requires transitive annotations;
 
 }

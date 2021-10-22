@@ -7,7 +7,7 @@
     <groupId>com.xiaohe66</groupId>
     <artifactId>xiaohe66-commons</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 
     <properties>
         <okhttp.version>4.9.2</okhttp.version>
@@ -88,7 +88,7 @@
             <dependency>
                 <groupId>com.xiaohe66</groupId>
                 <artifactId>xiaohe66-common-api</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
             </dependency>
 
             <dependency>
