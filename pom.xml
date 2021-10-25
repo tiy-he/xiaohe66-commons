@@ -10,6 +10,8 @@
     <version>2.0.1</version>
 
     <properties>
+        <mvnrepository.name>xiaohe66-mvnrepository</mvnrepository.name>
+
         <okhttp.version>4.9.2</okhttp.version>
 
         <slf4j-api.version>2.0.0-alpha5</slf4j-api.version>
@@ -24,6 +26,48 @@
 
     <build>
         <plugins>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <altDeploymentRepository>
+                        internal.repo::default::file:${project.build.directory}/${mvnrepository.name}
+                    </altDeploymentRepository>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 提交信息 -->
+                    <message>Maven artifacts for ${project.version}</message>
+                    <noJekyll>true</noJekyll>
+                    <!--本地jar相关文件地址，与上方配置储存库位置(altDeploymentRepository)保持一致-->
+                    <outputDirectory>${project.build.directory}/${mvnrepository.name}</outputDirectory>
+                    <!--配置上传到github哪个分支，此处配置格式必须以refs/heads/+分支名称-->
+                    <branch>refs/heads/main</branch>
+                    <merge>true</merge>
+                    <includes>
+                        <include>**/*</include>
+                    </includes>
+                    <!--对应github上创建的仓库名称 name-->
+                    <repositoryName>${mvnrepository.name}</repositoryName>
+                    <!--github 仓库所有者即登录用户名-->
+                    <repositoryOwner>xiaohe66</repositoryOwner>
+                    <server>github</server>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- 跳过测试 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,6 +110,15 @@
         </plugins>
 
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub xiaohe66</name>
+            <url>https://maven.pkg.github.com/xiaohe66/xiaohe66-mvnrepository</url>
+        </repository>
+    </distributionManagement>
+
     <modules>
         <module>xiaohe66-common-api</module>
         <module>xiaohe66-common-base</module>
