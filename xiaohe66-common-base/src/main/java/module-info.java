@@ -19,6 +19,7 @@ module xiaohe.common.base {
     requires static com.google.gson;
     requires static com.google.common;
     requires static org.apache.commons.io;
+    requires static org.apache.commons.codec;
 
     requires static html2pdf;
 

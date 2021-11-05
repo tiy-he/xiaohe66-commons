@@ -17,18 +17,16 @@ import static org.junit.Assert.assertTrue;
 
 public class IdWorkerTest {
 
-    private IdWorker demo = new IdWorker(512);
-
     @Test
     public void test1() {
 
         int n = Integer.MAX_VALUE >> 6;
         long[] arr = new long[n];
 
-        arr[0] = demo.next();
+        arr[0] = IdWorker.getId();
 
         for (int i = 1; i < n; i++) {
-            long id = demo.next();
+            long id = IdWorker.getId();
             int index = Arrays.binarySearch(arr, 0, i, id);
             assertTrue(index == i || index < 0);
             assertTrue(arr[i - 1] < id);
@@ -52,7 +50,7 @@ public class IdWorkerTest {
         Object empty = new Object();
         AtomicInteger index = new AtomicInteger();
 
-        idSet.put(demo.next(), empty);
+        idSet.put(IdWorker.getId(), empty);
 
         AtomicInteger times = new AtomicInteger();
 
@@ -70,7 +68,7 @@ public class IdWorkerTest {
                         return;
                     }
 
-                    long id = demo.next();
+                    long id = IdWorker.getId();
                     if (idSet.containsKey(id)) {
                         existId.add(id);
                         return;
@@ -82,7 +80,7 @@ public class IdWorkerTest {
                 }
                 times.incrementAndGet();
 
-            } catch (Throwable e){
+            } catch (Throwable e) {
                 e.printStackTrace();
 
             } finally {

@@ -19,6 +19,9 @@ public class R<T> {
     public static final R<?> SUCCESS = R.ok(null);
     public static final R<?> FAIL = R.err("");
 
+    public static final R<Boolean> SUCCESS_TRUE = new R<>(SUCCESS_CODE, true,"");
+    public static final R<Boolean> SUCCESS_FALSE = new R<>(SUCCESS_CODE, false,"");
+
     private int code;
     private String msg;
     private T data;
@@ -48,6 +51,18 @@ public class R<T> {
 
     public static <T> R<T> ok(T data, String msg) {
         return new R<>(SUCCESS_CODE, data, msg);
+    }
+
+    public static R<Boolean> ok(boolean bool) {
+        return bool ? SUCCESS_TRUE : SUCCESS_FALSE;
+    }
+
+    public static R<Boolean> okTrue() {
+        return SUCCESS_TRUE;
+    }
+
+    public static R<Boolean> okFalse() {
+        return SUCCESS_FALSE;
     }
 
     @SuppressWarnings("unchecked")
