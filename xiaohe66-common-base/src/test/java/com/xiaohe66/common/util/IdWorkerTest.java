@@ -18,6 +18,13 @@ import static org.junit.Assert.assertTrue;
 public class IdWorkerTest {
 
     @Test
+    public void test0() {
+
+        System.out.println(IdWorker.getId());
+
+    }
+
+    @Test
     public void test1() {
 
         int n = Integer.MAX_VALUE >> 6;

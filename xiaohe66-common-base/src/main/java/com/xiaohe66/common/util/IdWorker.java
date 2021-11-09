@@ -10,7 +10,9 @@ package com.xiaohe66.common.util;
  */
 public final class IdWorker {
 
-    private static Sequence sequence = new Sequence();
+    private static final long START_TIME = 1584447194666L;
+
+    private static Sequence sequence = new Sequence(START_TIME);
 
     private IdWorker() {
     }
