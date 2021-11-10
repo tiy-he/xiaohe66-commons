@@ -20,7 +20,7 @@ public class IdWorkerTest {
     @Test
     public void test0() {
 
-        System.out.println(IdWorker.getId());
+        System.out.println(IdWorker.genId());
 
     }
 
@@ -30,10 +30,10 @@ public class IdWorkerTest {
         int n = Integer.MAX_VALUE >> 6;
         long[] arr = new long[n];
 
-        arr[0] = IdWorker.getId();
+        arr[0] = IdWorker.genId();
 
         for (int i = 1; i < n; i++) {
-            long id = IdWorker.getId();
+            long id = IdWorker.genId();
             int index = Arrays.binarySearch(arr, 0, i, id);
             assertTrue(index == i || index < 0);
             assertTrue(arr[i - 1] < id);
@@ -57,7 +57,7 @@ public class IdWorkerTest {
         Object empty = new Object();
         AtomicInteger index = new AtomicInteger();
 
-        idSet.put(IdWorker.getId(), empty);
+        idSet.put(IdWorker.genId(), empty);
 
         AtomicInteger times = new AtomicInteger();
 
@@ -75,7 +75,7 @@ public class IdWorkerTest {
                         return;
                     }
 
-                    long id = IdWorker.getId();
+                    long id = IdWorker.genId();
                     if (idSet.containsKey(id)) {
                         existId.add(id);
                         return;

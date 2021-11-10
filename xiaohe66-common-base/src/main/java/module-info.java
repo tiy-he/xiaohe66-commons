@@ -22,6 +22,7 @@ module xiaohe.common.base {
     requires static org.apache.commons.codec;
 
     requires static html2pdf;
+    requires static java.management;
 
 
 }

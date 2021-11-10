@@ -1,7 +1,9 @@
 package com.xiaohe66.common.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.concurrent.ThreadLocalRandom;
@@ -10,9 +12,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * 分布式高效有序ID生成器
  * <p>
  * 源于mybatis-plus的com.baomidou.mybatisplus.core.toolkit.Sequence
+ * <p>
+ * 64位 = [0][时间戳:41位][数据中心:5位][工作id:5位][序列号:12位]
  *
  * @author hubin
  * @author xiaohe66
+ * @since 2021.11.05
  */
 @Slf4j
 public final class Sequence {
@@ -28,10 +33,16 @@ public final class Sequence {
      * 毫秒内自增位
      */
     private static final long SEQUENCE_BITS = 12L;
+    /**
+     * = 5
+     */
     private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+    /**
+     * = 12 + 5 = 17
+     */
     private static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
     /**
-     * 时间戳左移动位
+     * = 17 + +5 + 5 = 22
      */
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
     private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
@@ -57,7 +68,7 @@ public final class Sequence {
     private long lastTimestamp = -1L;
 
     public Sequence(long startTime) {
-        this.dataCenterId = getDatacenterId(MAX_DATA_CENTER_ID);
+        this.dataCenterId = getDataCenterId(MAX_DATA_CENTER_ID);
         this.workerId = getMaxWorkerId(dataCenterId, MAX_WORKER_ID);
         this.startTime = startTime;
     }
@@ -86,19 +97,28 @@ public final class Sequence {
     /**
      * 获取 MAX_WORKER_ID
      */
-    protected static long getMaxWorkerId(long datacenterId, long maxWorkerId) {
-        StringBuilder mpid = new StringBuilder();
-        mpid.append(datacenterId);
+    private static long getMaxWorkerId(long dataCenterId, long maxWorkerId) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(dataCenterId);
+
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        if (StringUtils.isNotEmpty(name)) {
+            /*
+             * GET jvmPid
+             */
+            stringBuilder.append(name.split("@")[0]);
+        }
+
         /*
          * MAC + PID 的 hashcode 获取16个低位
          */
-        return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
+        return (stringBuilder.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
     }
 
     /**
      * 数据标识id部分
      */
-    protected static long getDatacenterId(long maxDatacenterId) {
+    private static long getDataCenterId(long maxDataCenterId) {
         long id = 0L;
         try {
             InetAddress ip = InetAddress.getLocalHost();
@@ -109,11 +129,11 @@ public final class Sequence {
                 byte[] mac = network.getHardwareAddress();
                 if (null != mac) {
                     id = ((0x000000FF & (long) mac[mac.length - 1]) | (0x0000FF00 & (((long) mac[mac.length - 2]) << 8))) >> 6;
-                    id = id % (maxDatacenterId + 1);
+                    id = id % (maxDataCenterId + 1);
                 }
             }
         } catch (Exception e) {
-            log.warn(" getDataCenterId: " + e.getMessage());
+            log.warn(" getDataCenterId: {}", e.getMessage());
         }
         return id;
     }
@@ -125,21 +145,28 @@ public final class Sequence {
      */
     public synchronized long nextId() {
         long timestamp = timeGen();
-        //闰秒
+
+        // 时钟回退时的处理逻辑
         if (timestamp < lastTimestamp) {
+
             long offset = lastTimestamp - timestamp;
-            if (offset <= 5) {
-                try {
-                    wait(offset << 1);
-                    timestamp = timeGen();
-                    if (timestamp < lastTimestamp) {
-                        throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", offset));
-                    }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", offset));
+
+            // 时钟回退太多时，直接抛出异常
+            if (offset > 5) {
+                throw new IllegalStateException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", offset));
+            }
+
+            // 时钟回退不多，等待小会后再尝试一次
+            try {
+                // 超时等待，释放cpu后若未在指定时间内被激活则自动激活
+                wait(offset << 1);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+
+            timestamp = timeGen();
+            if (timestamp < lastTimestamp) {
+                throw new IllegalStateException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", offset));
             }
         }
 
@@ -164,7 +191,7 @@ public final class Sequence {
                 | no;
     }
 
-    protected long tilNextMillis(long lastTimestamp) {
+    private long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
@@ -172,7 +199,7 @@ public final class Sequence {
         return timestamp;
     }
 
-    protected long timeGen() {
+    private long timeGen() {
         return SystemClock.currentTimeMillis();
     }
 
