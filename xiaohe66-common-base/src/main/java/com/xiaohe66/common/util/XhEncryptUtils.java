@@ -3,6 +3,10 @@ package com.xiaohe66.common.util;
 import java.nio.charset.StandardCharsets;
 
 /**
+ * 自定义编码
+ *
+ * 每个字符(英文、数字、特殊字符)等在编码后长度变成 2，每个中文编码后变成长度 6
+ *
  * @author xiaohe
  * @time 2020.01.16 17:45
  */
