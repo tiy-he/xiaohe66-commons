@@ -3,7 +3,10 @@ package com.xiaohe66.common.util;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j
@@ -31,6 +34,14 @@ public class PasswordUtilsTest {
         String password = "f16f7a5a0d043d8a57c854c667dce52258633ee0503c8f2ef9c8925b65e73312";
 
         assertTrue(PasswordUtils.verify(text, password));
+    }
 
+    @Test
+    public void test3() {
+
+        String text = "";
+        String password = "";
+
+        assertFalse(PasswordUtils.verify(text, password));
     }
 }

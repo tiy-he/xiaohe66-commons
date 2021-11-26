@@ -37,6 +37,11 @@ public final class PasswordUtils {
         Objects.requireNonNull(text);
         Objects.requireNonNull(password);
 
+        if(password.length() != PASSWORD_LEN){
+            // 密码长度不合法，表示不正常。直接返回 false
+            return false;
+        }
+
         String salt = getSalt(password);
         String hash = getHash(password);
 
