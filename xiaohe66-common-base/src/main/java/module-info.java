@@ -5,8 +5,10 @@ module xiaohe.common.base {
     exports com.xiaohe66.common.util;
     exports com.xiaohe66.common.util.concurrent;
     exports com.xiaohe66.common.util.gson;
+    exports com.xiaohe66.common.util.jackson;
 
     opens com.xiaohe66.common.dto;
+    opens com.xiaohe66.common.util.jackson;
 
     requires static lombok;
     requires transitive org.slf4j;
