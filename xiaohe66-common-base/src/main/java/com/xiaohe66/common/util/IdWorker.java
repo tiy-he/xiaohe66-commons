@@ -1,5 +1,10 @@
 package com.xiaohe66.common.util;
 
+import com.xiaohe66.common.util.time.DateTimeFormatters;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 /**
  * 雪花ID生成器（线程安全）
  * <p>
@@ -10,7 +15,7 @@ package com.xiaohe66.common.util;
  */
 public final class IdWorker {
 
-    private static final long START_TIME = 1584447194666L;
+    public static final long START_TIME = 1584447194666L;
 
     private static Sequence sequence = new Sequence(START_TIME);
 
@@ -23,5 +28,19 @@ public final class IdWorker {
 
     public static String genIdStr() {
         return String.valueOf(sequence.nextId());
+    }
+
+    public static long takeTimestamp(long id) {
+        return (id >> Sequence.TIMESTAMP_LEFT_SHIFT) + START_TIME;
+    }
+
+    public static LocalDateTime takeLocalDateTime(long id) {
+        long timestamp = takeTimestamp(id) / 1000;
+        return LocalDateTime.ofEpochSecond(timestamp, 0, ZoneOffset.ofHours(8));
+    }
+
+    public static String takeDate(long id) {
+        LocalDateTime localDateTime = takeLocalDateTime(id);
+        return localDateTime.format(DateTimeFormatters.DATE_TIME);
     }
 }

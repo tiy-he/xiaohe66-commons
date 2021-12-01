@@ -1,7 +1,10 @@
 package com.xiaohe66.common.util;
 
+import com.xiaohe66.common.util.time.DateTimeFormatters;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +23,26 @@ public class IdWorkerTest {
     @Test
     public void test0() {
 
-        System.out.println(IdWorker.genId());
+        long id = IdWorker.genId();
+        long currentTimeMillis = System.currentTimeMillis();
 
+        long timestamp = IdWorker.takeTimestamp(id);
+
+        System.out.println(timestamp);
+        System.out.println(currentTimeMillis);
+
+        assertTrue(currentTimeMillis - timestamp < 1000);
+    }
+
+    @Test
+    public void test00() {
+        assertEquals(IdWorker.START_TIME, IdWorker.takeTimestamp(1));
+        LocalDateTime localDateTime = IdWorker.takeLocalDateTime(1);
+
+        LocalDateTime correct = LocalDateTime.of(2020, 03, 17, 20, 13, 14);
+        assertEquals(correct, localDateTime);
+
+        assertEquals("2020-03-17 20:13:14",IdWorker.takeDate(1));
     }
 
     @Test

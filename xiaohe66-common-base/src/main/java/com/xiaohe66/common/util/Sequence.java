@@ -25,27 +25,27 @@ public final class Sequence {
     /**
      * 机器标识位数
      */
-    private static final long WORKER_ID_BITS = 5L;
-    private static final long DATA_CENTER_ID_BITS = 5L;
-    private static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
-    private static final long MAX_DATA_CENTER_ID = ~(-1L << DATA_CENTER_ID_BITS);
+    public static final long WORKER_ID_BITS = 5L;
+    public static final long DATA_CENTER_ID_BITS = 5L;
+    public static final long MAX_WORKER_ID = ~(-1L << WORKER_ID_BITS);
+    public static final long MAX_DATA_CENTER_ID = ~(-1L << DATA_CENTER_ID_BITS);
     /**
      * 毫秒内自增位
      */
-    private static final long SEQUENCE_BITS = 12L;
+    public static final long SEQUENCE_BITS = 12L;
     /**
      * = 5
      */
-    private static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
+    public static final long WORKER_ID_SHIFT = SEQUENCE_BITS;
     /**
      * = 12 + 5 = 17
      */
-    private static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
+    public static final long DATA_CENTER_ID_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS;
     /**
      * = 17 + +5 + 5 = 22
      */
-    private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
-    private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
+    public static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
+    public static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
 
     private final long workerId;
 
