@@ -1,12 +1,14 @@
 package com.xiaohe66.common.api;
 
+import com.fasterxml.jackson.databind.JavaType;
+
 import java.util.Map;
 
 /**
  * @author xiaohe
  * @time 2021.07.23 11:00
  */
-public interface IApiRequest<E extends BaseApiResponse> {
+public interface IApiRequest<E extends IApiResponse> {
 
     enum Method {
         /**
@@ -28,9 +30,9 @@ public interface IApiRequest<E extends BaseApiResponse> {
      * 建立实体类的抽象方法
      *
      * @return 结果实体类
-     * @throws ApiException 无法构建请求时抛出
+     * @throws BuildRequestBodyException 无法构建请求时抛出
      */
-    Object buildRequestBody() throws ApiException;
+    Object buildRequestBody() throws BuildRequestBodyException;
 
     /**
      * 构建实体类的方法
@@ -40,6 +42,15 @@ public interface IApiRequest<E extends BaseApiResponse> {
      * @throws ApiException 无法转换实体时抛出
      */
     E buildResponseBody(String response) throws ApiException;
+
+    /**
+     * 结果类的 JavaType 对象
+     * <p>
+     * note : 不在框架内封装getResponseType()为 getResponseClass()，这个由框架的使用方实现
+     *
+     * @return JavaType
+     */
+    JavaType getResponseType();
 
     /**
      * 获取请求类型

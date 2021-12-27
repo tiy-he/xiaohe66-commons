@@ -1,11 +1,14 @@
 package com.xiaohe66.common.api.okhttp;
 
 import com.xiaohe66.common.api.ApiException;
-import com.xiaohe66.common.api.BaseApiResponse;
+import com.xiaohe66.common.api.ApiSupplier;
+import com.xiaohe66.common.api.BuildRequestBodyException;
 import com.xiaohe66.common.api.IApiCallback;
 import com.xiaohe66.common.api.IApiClient;
 import com.xiaohe66.common.api.IApiRequest;
+import com.xiaohe66.common.api.IApiResponse;
 import lombok.Getter;
+import lombok.NonNull;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -37,26 +40,19 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
      * @param callback   回调
      */
     @Override
-    public <T extends BaseApiResponse> void executeAsync(IApiRequest<T> apiRequest, IApiCallback<T> callback) throws ApiException {
+    public <T extends IApiResponse> void executeAsync(IApiRequest<T> apiRequest, IApiCallback<T> callback) {
 
-        if (callback instanceof okhttp3.Callback) {
+        doExecuteAsync(apiRequest, callback, () -> new CallbackObject<T>(apiRequest) {
+            @Override
+            public void onSuccess(T response) {
+                callback.onSuccess(response);
+            }
 
-            doExecuteAsync(apiRequest, (okhttp3.Callback) callback);
-
-        } else {
-
-            doExecuteAsync(apiRequest, new CallbackObject<T>(apiRequest) {
-                @Override
-                public void onSuccess(T response) {
-                    callback.onSuccess(response);
-                }
-
-                @Override
-                public void onFail(ApiException e) {
-                    callback.onFail(e);
-                }
-            });
-        }
+            @Override
+            public void onFail(ApiException e) {
+                callback.onFail(e);
+            }
+        });
     }
 
     @Override
@@ -82,42 +78,48 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
      * @param callback   回调
      */
     @Override
-    public void executeAsStringAsync(IApiRequest<?> apiRequest, IApiCallback<String> callback) throws ApiException {
+    public void executeAsStringAsync(IApiRequest<?> apiRequest, IApiCallback<String> callback) {
+
+        doExecuteAsync(apiRequest, callback, () -> new CallbackString() {
+            @Override
+            public void onSuccess(String responseBody) {
+                callback.onSuccess(responseBody);
+            }
+
+            @Override
+            public void onFail(ApiException e) {
+                callback.onFail(e);
+            }
+        });
+    }
+
+    protected void doExecuteAsync(IApiRequest<?> apiRequest, IApiCallback<?> callback, Supplier<okhttp3.Callback> supplier) {
+        Request request;
+        try {
+            request = buildRequest(apiRequest);
+
+        } catch (BuildRequestBodyException e) {
+            callback.onFail(e);
+            return;
+        }
+
         if (callback instanceof okhttp3.Callback) {
 
-            doExecuteAsync(apiRequest, (okhttp3.Callback) callback);
-
+            client.newCall(request).enqueue((okhttp3.Callback) callback);
         } else {
 
-            doExecuteAsync(apiRequest, new CallbackString() {
-                @Override
-                public void onSuccess(String responseBody) {
-                    callback.onSuccess(responseBody);
-                }
-
-                @Override
-                public void onFail(ApiException e) {
-                    callback.onFail(e);
-                }
-            });
+            client.newCall(request).enqueue(supplier.get());
         }
     }
 
-    protected void doExecuteAsync(IApiRequest<?> apiRequest, okhttp3.Callback callback) throws ApiException {
-
-        Request request = buildRequest(apiRequest);
-
-        client.newCall(request).enqueue(callback);
-    }
-
-    protected Request buildRequest(IApiRequest<?> apiRequest) {
+    protected Request buildRequest(IApiRequest<?> apiRequest) throws BuildRequestBodyException {
         if (!(apiRequest instanceof BaseOkHttpApiRequest)) {
             throw new ClassCastException("cannot cast IApiRequest to BaseOkHttpApiRequest");
         }
         return buildRequest(apiRequest, ((BaseOkHttpApiRequest<?>) apiRequest)::buildRequestBody);
     }
 
-    protected Request buildRequest(IApiRequest<?> apiRequest, Supplier<RequestBody> requestBodySupplier) {
+    protected Request buildRequest(IApiRequest<?> apiRequest, ApiSupplier<RequestBody> requestBodySupplier) throws BuildRequestBodyException {
 
         String fullUrl = baseUrl + apiRequest.getQueryUrl();
 
@@ -136,7 +138,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
                 return builder.build();
             case POST:
 
-                requestBody = requestBodySupplier.get();
+                requestBody = getRequestBody(requestBodySupplier);
 
                 builder = new Request.Builder()
                         .url(fullUrl)
@@ -148,7 +150,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
 
             case PUT:
 
-                requestBody = requestBodySupplier.get();
+                requestBody = getRequestBody(requestBodySupplier);
 
                 builder = new Request.Builder()
                         .url(fullUrl)
@@ -160,7 +162,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
 
             case DELETE:
 
-                requestBody = requestBodySupplier.get();
+                requestBody = getRequestBody(requestBodySupplier);
 
                 builder = new Request.Builder()
                         .url(fullUrl)
@@ -172,6 +174,18 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
 
             default:
                 throw new UnsupportedOperationException("unknown method:" + apiRequest.getMethod());
+        }
+    }
+
+    protected final RequestBody getRequestBody(ApiSupplier<RequestBody> requestBodySupplier) throws BuildRequestBodyException {
+        try {
+            return requestBodySupplier.get();
+
+        } catch (BuildRequestBodyException e) {
+            throw e;
+
+        } catch (ApiException e) {
+            throw new BuildRequestBodyException(e);
         }
     }
 
@@ -203,12 +217,12 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
          * @param e    IOException
          */
         @Override
-        default void onFailure(Call call, IOException e) {
+        default void onFailure(@NonNull Call call, @NonNull IOException e) {
             onFail(new OkHttpApiException("request is failure", e));
         }
     }
 
-    public abstract static class CallbackObject<T extends BaseApiResponse> implements Callback<T> {
+    public abstract static class CallbackObject<T extends IApiResponse> implements Callback<T> {
 
         @Getter
         private final IApiRequest<T> request;
@@ -218,7 +232,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
         }
 
         @Override
-        public void onResponse(Call call, Response response) {
+        public void onResponse(@NonNull Call call, @NonNull Response response) {
 
             try {
                 String responseString = getResponseString(response);
@@ -240,7 +254,7 @@ public abstract class AbstractOkHttpApiClient implements IApiClient {
          * @param response Response
          */
         @Override
-        default void onResponse(Call call, Response response) {
+        default void onResponse(@NonNull Call call, @NonNull Response response) {
 
             try {
                 String responseString = getResponseString(response);

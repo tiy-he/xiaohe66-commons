@@ -1,7 +1,7 @@
 package com.xiaohe66.common.api.restful;
 
-import com.xiaohe66.common.api.BaseApiResponse;
 import com.xiaohe66.common.api.IApiModel;
+import com.xiaohe66.common.api.IApiResponse;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author xiaohe
  * @time 2021.07.23 14:51
  */
-public interface IRestfulApiRequestFactory<E extends BaseApiResponse> {
+public interface IRestfulApiRequestFactory<E extends IApiResponse> {
 
     /**
      * 构造 restful get 请求

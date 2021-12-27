@@ -1,8 +1,8 @@
 package com.xiaohe66.common.api.restful;
 
-import com.xiaohe66.common.api.BaseApiResponse;
 import com.xiaohe66.common.api.IApiModel;
 import com.xiaohe66.common.api.IApiRequest;
+import com.xiaohe66.common.api.IApiResponse;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author xiaohe
  * @time 2021.07.23 14:55
  */
-public class SimpleRestfulApiRequestFactory<E extends BaseApiResponse> implements IRestfulApiRequestFactory<E> {
+public class SimpleRestfulApiRequestFactory<E extends IApiResponse> implements IRestfulApiRequestFactory<E> {
 
     private final String queryUrl;
     private final Class<E> responseCls;

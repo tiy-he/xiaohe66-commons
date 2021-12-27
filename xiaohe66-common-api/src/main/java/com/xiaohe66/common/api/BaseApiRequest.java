@@ -1,5 +1,8 @@
 package com.xiaohe66.common.api;
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.xiaohe66.common.util.JsonUtils;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -7,7 +10,7 @@ import java.util.Map;
  * @author xiaohe
  * @time 2021.07.14 14:29
  */
-public abstract class BaseApiRequest<E extends BaseApiResponse> implements IApiRequest<E> {
+public abstract class BaseApiRequest<E extends IApiResponse> implements IApiRequest<E> {
 
     private final Method method;
     private Map<String, String> header = Collections.emptyMap();
@@ -38,6 +41,14 @@ public abstract class BaseApiRequest<E extends BaseApiResponse> implements IApiR
     @Override
     public Method getMethod() {
         return method;
+    }
+
+    public JavaType constructType(Class<?> cls) {
+        return JsonUtils.constructType(cls);
+    }
+
+    public JavaType constructType(Class<?> cls, JavaType javaType) {
+        return JsonUtils.constructType(cls, javaType);
     }
 
 }

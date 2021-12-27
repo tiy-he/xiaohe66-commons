@@ -22,7 +22,7 @@ public interface IApiClient {
      * @param callback 回调
      * @throws ApiException 当异常时抛出
      */
-    void executeAsStringAsync(IApiRequest<?> request, IApiCallback<String> callback) throws ApiException;
+    void executeAsStringAsync(IApiRequest<?> request, IApiCallback<String> callback);
 
     /**
      * 执行同步请求，将结果转换成实体类返回
@@ -32,7 +32,7 @@ public interface IApiClient {
      * @return 结果实体
      * @throws ApiException 当请求发生异常时抛出
      */
-    default <T extends BaseApiResponse> T execute(IApiRequest<T> request) throws ApiException {
+    default <T extends IApiResponse> T execute(IApiRequest<T> request) throws ApiException {
         String body = executeAsString(request);
 
         try {
@@ -54,7 +54,7 @@ public interface IApiClient {
      * @param <T>      结果实体
      * @throws ApiException 当异常时抛出
      */
-    <T extends BaseApiResponse> void executeAsync(IApiRequest<T> request, IApiCallback<T> callback) throws ApiException;
+    <T extends IApiResponse> void executeAsync(IApiRequest<T> request, IApiCallback<T> callback);
 
 
     /**
@@ -73,9 +73,8 @@ public interface IApiClient {
      *
      * @param request  IApiRequest
      * @param callback 回调
-     * @throws ApiException 当异常时抛出
      */
-    default <T extends BaseApiResponse> void executeAsSuccessAsync(IApiRequest<T> request, IBooleanApiCallback callback) throws ApiException {
+    default <T extends IApiResponse> void executeAsSuccessAsync(IApiRequest<T> request, IBooleanApiCallback callback) {
         executeAsync(request, new IApiCallback<T>() {
             @Override
             public void onSuccess(T response) {

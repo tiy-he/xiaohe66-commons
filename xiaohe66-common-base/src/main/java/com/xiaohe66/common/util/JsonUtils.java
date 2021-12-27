@@ -15,12 +15,14 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.type.TypeBindings;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -119,7 +121,7 @@ public class JsonUtils {
             return (ObjectNode) jsonNode;
         }
 
-        if(jsonNode.isNull()){
+        if (jsonNode.isNull()) {
             return objectMapper.createObjectNode();
         }
 
@@ -147,6 +149,22 @@ public class JsonUtils {
 
         String json = objectMapper.writeValueAsString(object);
         return formatArrayNode(json);
+    }
+
+    public static JavaType constructType(Type type) {
+        return objectMapper.getTypeFactory().constructType(type);
+    }
+
+    public static JavaType constructType(Class<?> parametrized, Class<?>... parameterClasses) {
+        return objectMapper.getTypeFactory().constructParametricType(parametrized, parameterClasses);
+    }
+
+    public static JavaType constructType(Class<?> parametrized, JavaType... parameterTypes) {
+        return objectMapper.getTypeFactory().constructParametricType(parametrized, parameterTypes);
+    }
+
+    public static JavaType constructType(Class<?> parametrized, TypeBindings parameterTypes) {
+        return objectMapper.getTypeFactory().constructParametricType(parametrized, parameterTypes);
     }
 
 

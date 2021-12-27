@@ -1,7 +1,6 @@
 package com.xiaohe66.common.api.okhttp;
 
-import com.xiaohe66.common.api.ApiException;
-import com.xiaohe66.common.api.BaseApiResponse;
+import com.xiaohe66.common.api.IApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 
@@ -16,11 +15,11 @@ public class SimpleOkHttpApiClient extends AbstractOkHttpApiClient {
         super(client, baseUrl);
     }
 
-    public <T extends BaseApiResponse> void executeAsync(BaseOkHttpApiRequest<T> apiRequest, CallbackObject<T> callback) throws ApiException {
-        doExecuteAsync(apiRequest, callback);
+    public <T extends IApiResponse> void executeAsync(BaseOkHttpApiRequest<T> apiRequest, CallbackObject<T> callback) {
+        super.executeAsync(apiRequest, callback);
     }
 
-    public void executeAsStringAsync(BaseOkHttpApiRequest<?> apiRequest, CallbackString callback) throws ApiException {
-        doExecuteAsync(apiRequest, callback);
+    public void executeAsStringAsync(BaseOkHttpApiRequest<?> apiRequest, CallbackString callback) {
+        super.executeAsStringAsync(apiRequest, callback);
     }
 }

@@ -1,14 +1,15 @@
 package com.xiaohe66.common.api.restful;
 
-import com.xiaohe66.common.api.BaseApiResponse;
-import com.xiaohe66.common.api.okhttp.BaseOkHttpApiRequest;
+import com.fasterxml.jackson.databind.JavaType;
+import com.xiaohe66.common.api.IApiResponse;
+import com.xiaohe66.common.api.okhttp.FormOkHttpApiRequest;
 
 /**
  * @author xiaohe
  * @time 2021.07.23 10:25
  */
-public class RestfulApiRequest<E extends BaseApiResponse>
-        extends BaseOkHttpApiRequest<E>
+public class RestfulApiRequest<E extends IApiResponse>
+        extends FormOkHttpApiRequest<E>
         implements IRestfulApiRequest<E> {
 
     protected final String queryUrl;
@@ -26,7 +27,7 @@ public class RestfulApiRequest<E extends BaseApiResponse>
     }
 
     @Override
-    protected Class<E> getResponseClass() {
-        return responseCls;
+    public JavaType getResponseType() {
+        return constructType(responseCls);
     }
 }

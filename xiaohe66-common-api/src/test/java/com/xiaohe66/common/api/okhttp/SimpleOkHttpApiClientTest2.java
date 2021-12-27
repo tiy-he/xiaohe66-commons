@@ -1,12 +1,11 @@
 package com.xiaohe66.common.api.okhttp;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.xiaohe66.common.api.ApiException;
-import com.xiaohe66.common.api.BaseApiResponse;
 import com.xiaohe66.common.api.IApiCallback;
 import com.xiaohe66.common.api.IApiModel;
 import com.xiaohe66.common.api.IApiRequest;
 import com.xiaohe66.common.api.IApiResponse;
-import com.xiaohe66.common.api.restful.SimpleRestfulApiRequestFactory;
 import com.xiaohe66.common.util.JsonUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +15,11 @@ import okio.Buffer;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
 
 @Slf4j
-public class SimpleOkHttpApiClientTest {
+public class SimpleOkHttpApiClientTest2 {
 
     @Test
     public void test1() {
@@ -59,8 +59,6 @@ public class SimpleOkHttpApiClientTest {
 
                 String responseBody = "{\"code\":0,\"msg\":\"\",\"data\":{\"value\":1}}";
 
-                log.info("request : {}", JsonUtils.toString(apiRequest));
-
                 IApiResponse o;
                 try {
                     o = apiRequest.buildResponseBody(responseBody);
@@ -77,26 +75,30 @@ public class SimpleOkHttpApiClientTest {
             }
         };
 
-        SimpleRestfulApiRequestFactory<MyResponse> factory = new SimpleRestfulApiRequestFactory<>("/test", MyResponse.class);
-
         MyModel model = new MyModel();
         model.setTest("666");
 
+        MyRequest request = new MyRequest();
+        request.setModel(model);
+
+        MyErrorRequest errorRequest = new MyErrorRequest();
+        errorRequest.setModel(model);
+
         try {
-            log.info("-------------myResponse get : {}", client.execute(factory.get(1)));
-            log.info("-------------myResponse post : {}", client.execute(factory.post(model)));
-            log.info("-------------myResponse put : {}", client.execute(factory.put(model)));
-            log.info("-------------myResponse delete : {}", client.execute(factory.delete(1)));
+            log.info("-------------myResponse get : {}", client.execute(request));
 
-            log.info("-------------myResponse post : {}", client.executeAsSuccess(factory.get(1)));
-            log.info("-------------myResponse post : {}", client.executeAsSuccess(factory.post(model)));
-            log.info("-------------myResponse put : {}", client.executeAsSuccess(factory.put(model)));
-            log.info("-------------myResponse delete : {}", client.executeAsSuccess(factory.delete(1)));
+            client.executeAsync(request, response -> log.info("get response async: {}", response));
+            client.executeAsync(errorRequest, new IApiCallback<MyResponse<D>>() {
+                @Override
+                public void onSuccess(MyResponse<D> response) {
+                    log.info("get response async : {}", response);
+                }
 
-            client.executeAsync(factory.get(1), response -> log.info("get response : {}", response));
-            client.executeAsync(factory.post(model), response -> log.info("post response : {}", response));
-            client.executeAsync(factory.put(model), response -> log.info("put response : {}", response));
-            client.executeAsync(factory.delete(1), response -> log.info("delete response : {}", response));
+                @Override
+                public void onFail(ApiException e) {
+                    log.info("error msg : {}", e.getMessage());
+                }
+            });
 
 
         } catch (ApiException e) {
@@ -105,29 +107,66 @@ public class SimpleOkHttpApiClientTest {
     }
 
     @Data
-    public class MyModel implements IApiModel {
+    public static class MyModel implements IApiModel {
 
         private String test;
 
     }
 
+    public static class MyRequest extends FormOkHttpApiRequest<MyResponse<D>> {
+
+        public MyRequest() {
+            super(Method.GET);
+        }
+
+        @Override
+        public String getQueryUrl() {
+            return "/test";
+        }
+
+        @Override
+        public JavaType getResponseType() {
+            return JsonUtils.constructType(MyResponse.class, D.class);
+        }
+    }
+
+    public static class MyErrorRequest extends FormOkHttpApiRequest<MyResponse<D>> {
+
+        public MyErrorRequest() {
+            super(Method.GET);
+        }
+
+        @Override
+        public String getQueryUrl() {
+            return "test";
+        }
+
+        @Override
+        public JavaType getResponseType() {
+            return JsonUtils.constructType(MyResponse.class, List.class);
+        }
+
+    }
+
     @Data
-    public static class MyResponse extends BaseApiResponse {
+    public static class MyResponse<T> implements IApiResponse {
+
+        private String body;
 
         private Integer code;
         private String msg;
-        private D data;
+        private T data;
 
         @Override
         public boolean isSuccess() {
             return code == 0;
         }
 
-        @Data
-        public static class D {
+    }
 
-            private Integer value;
-        }
+    @Data
+    public static class D {
 
+        private Integer value;
     }
 }

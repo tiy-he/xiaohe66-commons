@@ -1,7 +1,7 @@
 package com.xiaohe66.common.api;
 
 /**
- * 当 api 请求异常时抛出（系统异常、请求结果不是 200、连接超时、未知异常等）
+ * 当api异常时抛出，包括构建请求，获取请求结果，构建结果类等
  *
  * @author xiaohe
  * @time 2021.07.14 17:15
