@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.xiaohe66.common.util.JsonUtils;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Map;
 public abstract class BaseApiRequest<E extends IApiResponse> implements IApiRequest<E> {
 
     private final Method method;
-    private Map<String, String> header = Collections.emptyMap();
+    private Map<String, String> header = new HashMap<>();
     private IApiModel model;
 
     public BaseApiRequest(Method method) {
