@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.xiaohe66.common.web.CommonWebAutoConfiguration

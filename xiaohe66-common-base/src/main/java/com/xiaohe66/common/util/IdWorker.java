@@ -17,7 +17,7 @@ public final class IdWorker {
 
     public static final long START_TIME = 1584447194666L;
 
-    private static Sequence sequence = new Sequence(START_TIME);
+    private static final Sequence sequence = new Sequence(START_TIME);
 
     private IdWorker() {
     }

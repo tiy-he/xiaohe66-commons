@@ -23,10 +23,10 @@ public class Slf4jTest {
     @Test
     public void test3() {
 
-        log.atInfo()
+        /*log.atInfo()
                 .addArgument("p1")
                 .addArgument("p2")
-                .log(" {} hello {}");
+                .log(" {} hello {}");*/
     }
 
     @Test
@@ -39,7 +39,7 @@ public class Slf4jTest {
         log.debug("oldT={} newT={} Temperature changed.", newT, oldT);
 
         // using fluent API
-        log.atDebug().addKeyValue("oldT", oldT).addKeyValue("newT", newT).log("{oldT}{}Temperature changed.");
+        // log.atDebug().addKeyValue("oldT", oldT).addKeyValue("newT", newT).log("{oldT}{}Temperature changed.");
 
     }
 }

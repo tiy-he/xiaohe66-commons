@@ -1,5 +1,7 @@
 package com.xiaohe66.common.dto;
 
+import com.xiaohe66.common.util.ex.BusinessException;
+import com.xiaohe66.common.util.ex.ErrorCodeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,13 +16,13 @@ import lombok.ToString;
 public class R<T> {
 
     public static final int SUCCESS_CODE = 10000;
-    public static final int ERROR_CODE = -1;
+    public static final int ERROR_CODE = ErrorCodeEnum.ERROR.getCode();
 
     public static final R<?> SUCCESS = R.ok(null);
     public static final R<?> FAIL = R.err("");
 
-    public static final R<Boolean> SUCCESS_TRUE = new R<>(SUCCESS_CODE, true,"");
-    public static final R<Boolean> SUCCESS_FALSE = new R<>(SUCCESS_CODE, false,"");
+    public static final R<Boolean> SUCCESS_TRUE = new R<>(SUCCESS_CODE, true, "");
+    public static final R<Boolean> SUCCESS_FALSE = new R<>(SUCCESS_CODE, false, "");
 
     private int code;
     private String msg;
@@ -80,5 +82,17 @@ public class R<T> {
 
     public static <T> R<T> build(int code, String msg, T data) {
         return new R<>(code, data, msg);
+    }
+
+    public static <T> R<T> build(ErrorCodeEnum codeEnum) {
+        return new R<>(codeEnum.getCode(), null, codeEnum.getMsg());
+    }
+
+    public static <T> R<T> build(ErrorCodeEnum codeEnum, String msg) {
+        return new R<>(codeEnum.getCode(), null, msg);
+    }
+
+    public static <T> R<T> build(BusinessException e) {
+        return new R<>(e.getCode(), null, e.getMsg());
     }
 }
