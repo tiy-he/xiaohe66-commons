@@ -1,12 +1,16 @@
 module xiaohe.common.web.boot.starter {
 
     opens com.xiaohe66.common.web;
+    opens com.xiaohe66.common.web.mybatis.base;
+    opens com.xiaohe66.common.web.mybatis.injector;
     opens com.xiaohe66.common.web.request.repeatable;
     opens com.xiaohe66.common.web.resolver;
     opens com.xiaohe66.common.web.sign;
 
     exports com.xiaohe66.common.web;
     exports com.xiaohe66.common.web.base;
+    exports com.xiaohe66.common.web.mybatis.base;
+    exports com.xiaohe66.common.web.mybatis.injector;
     exports com.xiaohe66.common.web.request.repeatable;
     exports com.xiaohe66.common.web.sign;
     exports com.xiaohe66.common.web.resolver;
@@ -26,5 +30,10 @@ module xiaohe.common.web.boot.starter {
     requires transitive spring.web;
     requires transitive spring.webmvc;
     requires transitive java.validation;
+
+    requires transitive mybatis.plus.core;
+    requires transitive org.mybatis;
+    requires mybatis.plus.extension;
+    requires mybatis.plus.annotation;
 
 }
