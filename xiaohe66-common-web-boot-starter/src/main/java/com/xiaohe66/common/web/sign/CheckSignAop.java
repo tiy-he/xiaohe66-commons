@@ -60,7 +60,11 @@ public class CheckSignAop {
             String secret = secretSupplier.getSecret(appId);
             Assert.notEmpty(secret, ErrorCodeEnum.NOT_FOUND_ACCOUNT);
 
-            String queryUrl = request.getRequestURI() + '?' + StringUtils.trimToEmpty(request.getQueryString());
+            String queryString = StringUtils.trimToEmpty(request.getQueryString());
+
+            String queryUrl = queryString.length() > 0 ?
+                    request.getRequestURI() + '?' + queryString :
+                    request.getRequestURI();
 
             if (!SignUtils.verifyMd5(request.getMethod(), queryUrl, timestamp, body, secret, sign)) {
                 throw new BusinessException(ErrorCodeEnum.ILLEGAL_OPERATE, "签名错误");

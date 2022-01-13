@@ -21,7 +21,7 @@ public final class SignUtils {
      * 创建待签名的源字符串
      *
      * @param method    请求类型(GET/POST/PUT/DELETE)
-     * @param url       请求的链接（不带域名，不带?后面的参数）例：/test/api
+     * @param url       请求的链接（不带域名，带?后面的参数）例：/test/api?a=1
      * @param timestamp 当前时间戳（豪秒）
      * @param body      有body的时候传入，若没有，则不传入
      * @return 待签名的源字符串
