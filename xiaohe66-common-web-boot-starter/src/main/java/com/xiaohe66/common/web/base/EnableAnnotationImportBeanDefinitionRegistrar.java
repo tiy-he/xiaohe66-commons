@@ -1,6 +1,6 @@
 package com.xiaohe66.common.web.base;
 
-import com.xiaohe66.common.web.sign.CheckSignAop;
+import com.xiaohe66.common.web.sign.config.CheckSignAop;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;

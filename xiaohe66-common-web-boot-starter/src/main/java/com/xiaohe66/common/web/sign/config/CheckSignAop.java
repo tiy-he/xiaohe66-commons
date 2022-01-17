@@ -1,4 +1,4 @@
-package com.xiaohe66.common.web.sign;
+package com.xiaohe66.common.web.sign.config;
 
 import com.xiaohe66.common.util.Assert;
 import com.xiaohe66.common.util.SignUtils;
@@ -6,6 +6,8 @@ import com.xiaohe66.common.util.SystemClock;
 import com.xiaohe66.common.util.ex.BusinessException;
 import com.xiaohe66.common.util.ex.ErrorCodeEnum;
 import com.xiaohe66.common.web.CommonWebProperties;
+import com.xiaohe66.common.web.sign.CheckSignDto;
+import com.xiaohe66.common.web.sign.CheckSignSecretSupplier;
 import com.xiaohe66.common.web.util.WebUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

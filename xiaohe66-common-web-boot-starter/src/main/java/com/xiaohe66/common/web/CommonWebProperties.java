@@ -15,4 +15,5 @@ public class CommonWebProperties {
     private boolean checkSign;
     private long checkSignTimeoutMs = 1000 * 60 * 5;
 
+    private boolean permission;
 }

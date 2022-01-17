@@ -5,7 +5,10 @@ module xiaohe.common.web.boot.starter {
     opens com.xiaohe66.common.web.mybatis.injector;
     opens com.xiaohe66.common.web.request.repeatable;
     opens com.xiaohe66.common.web.resolver;
+    opens com.xiaohe66.common.web.sec;
+    opens com.xiaohe66.common.web.sec.config;
     opens com.xiaohe66.common.web.sign;
+    opens com.xiaohe66.common.web.sign.config;
 
     exports com.xiaohe66.common.web;
     exports com.xiaohe66.common.web.base;
@@ -14,6 +17,9 @@ module xiaohe.common.web.boot.starter {
     exports com.xiaohe66.common.web.request.repeatable;
     exports com.xiaohe66.common.web.sign;
     exports com.xiaohe66.common.web.resolver;
+    exports com.xiaohe66.common.web.sec;
+    exports com.xiaohe66.common.web.sec.annotation;
+    exports com.xiaohe66.common.web.sign.config;
 
     requires static lombok;
     requires static org.apache.tomcat.embed.core;
