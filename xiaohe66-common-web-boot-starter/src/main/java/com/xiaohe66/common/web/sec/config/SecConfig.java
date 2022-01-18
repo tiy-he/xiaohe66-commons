@@ -1,8 +1,7 @@
 package com.xiaohe66.common.web.sec.config;
 
-import com.xiaohe66.common.web.sec.CurrentAccount;
 import com.xiaohe66.common.web.sec.SecurityService;
-import com.xiaohe66.common.web.sec.impl.DefaultSecurityServiceImpl;
+import com.xiaohe66.common.web.sec.DefaultSecurityServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +19,7 @@ public class SecConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityService<CurrentAccount> securityService() {
+    public SecurityService securityService() {
         return new DefaultSecurityServiceImpl();
     }
 

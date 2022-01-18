@@ -9,12 +9,12 @@ import java.util.Collection;
  * @author xiaohe
  * @since 2021.10.28 16:15
  */
-public interface SecurityService<T extends CurrentAccount> {
+public interface SecurityService {
 
     String CURRENT_USER_KEY = "session_current_user";
     String ROLE_NAME_ADMIN = "admin";
 
-    void login(T currentAccount);
+    void login(CurrentAccount currentAccount);
 
     void logout();
 
@@ -22,9 +22,9 @@ public interface SecurityService<T extends CurrentAccount> {
 
     String getSessionId();
 
-    void setCurrentAccount(T account);
+    void setCurrentAccount(CurrentAccount account);
 
-    T getCurrentAccount();
+    CurrentAccount getCurrentAccount();
 
     Long getCurrentAccountId();
 

@@ -1,9 +1,7 @@
-package com.xiaohe66.common.web.sec.impl;
+package com.xiaohe66.common.web.sec;
 
 import com.xiaohe66.common.util.ex.BusinessException;
 import com.xiaohe66.common.util.ex.ErrorCodeEnum;
-import com.xiaohe66.common.web.sec.CurrentAccount;
-import com.xiaohe66.common.web.sec.SecurityService;
 import com.xiaohe66.common.web.util.WebUtils;
 import lombok.NonNull;
 
@@ -13,7 +11,7 @@ import java.util.Collection;
  * @author xiaohe
  * @since 2022.01.17 11:19
  */
-public class DefaultSecurityServiceImpl implements SecurityService<CurrentAccount> {
+public class DefaultSecurityServiceImpl implements SecurityService {
 
     @Override
     public void login(CurrentAccount currentAccount) {
