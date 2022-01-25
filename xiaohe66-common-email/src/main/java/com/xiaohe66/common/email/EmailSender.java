@@ -6,7 +6,9 @@ import com.xiaohe66.common.email.bo.EmailImage;
 import com.xiaohe66.common.email.bo.EmailSenderInfo;
 import com.xiaohe66.common.email.ex.EmailSendException;
 import com.xiaohe66.common.util.Check;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.mail.Address;
@@ -35,34 +37,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * @time 2020.03.05 10:51
  */
 @Slf4j
-public class EmailSendService {
+public class EmailSender {
 
     /**
      * 发件人缓存
      * 一般来说，发件人不会怎么换，因此可以缓存下来
      */
-    private static final Map<EmailSenderInfo, EmailSendService> instanceMap = new ConcurrentHashMap<>();
+    private static final Map<EmailSenderInfo, EmailSender> instanceMap = new ConcurrentHashMap<>();
 
     private Session session;
 
     private final EmailSenderInfo sender;
 
-    private EmailSendService(EmailSenderInfo sender) {
+    private EmailSender(EmailSenderInfo sender) {
         this.sender = sender;
         init();
     }
 
-    public static synchronized EmailSendService getInstance(EmailSenderInfo sender) {
-        if (sender == null) {
-            throw new IllegalArgumentException("发件人不能为空");
-        }
-
-        return instanceMap.computeIfAbsent(sender, key -> new EmailSendService(sender));
+    public static synchronized EmailSender getInstance(@NonNull EmailSenderInfo senderInfo) {
+        return instanceMap.computeIfAbsent(senderInfo, key -> new EmailSender(senderInfo));
     }
 
     private void init() {
 
-        log.info("初始化邮件发送服务session");
+        log.info("init email session");
         log.debug("emailSender : {}", sender);
 
         Properties props = new Properties();
@@ -76,35 +74,35 @@ public class EmailSendService {
 
         session = Session.getInstance(props);
 
-        log.info("邮件发送服务session初始化完成");
+        log.info("init email session success.");
     }
 
-    public void sendEmail(Email email) throws MessagingException {
-        log.info("发送邮件,目标 : {}", email.getAddresses());
+    public void sendEmail(@NonNull Email email) throws MessagingException {
+        log.info("send email, target : {}", email.getAddresses());
         check(email);
         try {
             MimeMessage message = createMimeMessage(email);
             Transport.send(message, sender.getEmailAccount(), sender.getEmailPwd());
-            log.info("邮件发送成功,目标 : {}", email.getAddresses());
+            log.info("send email success, target : {}", email.getAddresses());
 
         } catch (SendFailedException e) {
-            log.warn("邮件目标地址无效, message : {}", e.getMessage());
-            handleSendFailedException(e, email);
+
+            log.warn("send email fail, address is wrong, error message : {}, target : {}", e.getMessage(), email.getAddresses());
+            if (email.isTryAgainSend()) {
+                handleSendFailedException(e, email);
+            }
 
         } catch (MessagingException e) {
-            log.error("网络连接失败, message : {}, 目标 : {}", e.getMessage(), email.getAddresses());
+            log.error("send email fail, cannot connect network, message : {}, target : {}", e.getMessage(), email.getAddresses());
             throw e;
 
         } catch (Exception e) {
-            log.error("邮件发送失败, message : {}, 目标 : {}", e.getMessage(), email.getAddresses());
+            log.error("send email fail, unknown exception, error message : {}, target : {}", e.getMessage(), email.getAddresses());
             throw new EmailSendException(e);
         }
     }
 
-
-    private void handleSendFailedException(SendFailedException e, Email email) {
-
-        log.warn("存在错误的邮箱地址");
+    protected void handleSendFailedException(SendFailedException e, Email email) {
 
         InternetAddress[] invalidAddresses = castToInternetAddress(e.getInvalidAddresses());
         InternetAddress[] validSentAddresses = castToInternetAddress(e.getValidSentAddresses());
@@ -112,15 +110,14 @@ public class EmailSendService {
 
         if (log.isWarnEnabled()) {
 
-            log.warn("错误的邮箱地址 : {}", EmailHelper.joinAddressString(invalidAddresses));
-
-            log.warn("正确已发送的邮箱地址 : {}", EmailHelper.joinAddressString(validSentAddresses));
-
-            log.warn("正确未发送的邮箱地址 : {}", EmailHelper.joinAddressString(validUnsentAddresses));
+            log.warn("invalidAddresses : {}, validSentAddresses : {}, validUnsentAddresses : {}",
+                    EmailHelper.joinAddressString(invalidAddresses),
+                    EmailHelper.joinAddressString(validSentAddresses),
+                    EmailHelper.joinAddressString(validUnsentAddresses));
         }
 
         if (validUnsentAddresses.length == 0) {
-            log.warn("没有正确未发送的邮箱地址，因而忽略");
+            log.warn("not have validSentAddresses, so don`t try send.");
             return;
         }
 
@@ -145,18 +142,20 @@ public class EmailSendService {
         try {
             MimeMessage message = createMimeMessage(email);
 
-            log.warn("尝试重新发送");
+            log.warn("try send email again");
+
             Transport.send(message, sender.getEmailAccount(), sender.getEmailPwd());
-            log.warn("邮件发送成功");
+
+            log.warn("try send email again success");
 
         } catch (Exception e1) {
 
-            log.error("邮件发送异常，经过处理后仍无法正常发送, message : {}", e1.getMessage());
+            log.error("try send email again fail, error message : {}", e1.getMessage());
             throw new EmailSendException(e1);
         }
     }
 
-    private InternetAddress[] castToInternetAddress(Address[] addresses) {
+    protected InternetAddress[] castToInternetAddress(Address[] addresses) {
         if (addresses == null) {
             return new InternetAddress[0];
         }
@@ -167,16 +166,10 @@ public class EmailSendService {
         return result;
     }
 
-    private void check(Email email) {
-        if (email == null) {
-            throw new IllegalArgumentException("email cannot be null");
-        }
-        if (email.getAddressArr() == null || email.getAddressArr().length == 0) {
-            throw new IllegalArgumentException("targetAddressArr cannot be empty");
-        }
+    protected void check(Email email) {
 
-        if (email.getSubject() == null) {
-            throw new IllegalArgumentException("subject cannot be null");
+        if (ArrayUtils.isEmpty(email.getAddressArr()) || StringUtils.isEmpty(email.getAddresses())) {
+            throw new IllegalArgumentException("address cannot be empty");
         }
 
         if (email.getContent() == null) {
@@ -184,7 +177,7 @@ public class EmailSendService {
         }
     }
 
-    private MimeMessage createMimeMessage(Email email) throws MessagingException, UnsupportedEncodingException {
+    protected MimeMessage createMimeMessage(Email email) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage message = new MimeMessage(session);
 
@@ -212,7 +205,7 @@ public class EmailSendService {
         return message;
     }
 
-    private void addAttachment(MimeMultipart mime, List<EmailAttachment> attachmentList) throws MessagingException {
+    protected void addAttachment(MimeMultipart mime, List<EmailAttachment> attachmentList) throws MessagingException {
 
         if (attachmentList != null) {
             for (EmailAttachment emailAttachment : attachmentList) {
@@ -223,7 +216,7 @@ public class EmailSendService {
         }
     }
 
-    private void addContent(MimeMultipart mime, String html, List<EmailImage> imageList) throws MessagingException {
+    protected void addContent(MimeMultipart mime, String html, List<EmailImage> imageList) throws MessagingException {
 
         MimeMultipart content = new MimeMultipart("related");
 
