@@ -1,13 +1,13 @@
-package com.xiaohe66.common.email.service;
+package com.xiaohe66.common.email;
 
-import com.xiaohe66.common.email.entity.Email;
-import com.xiaohe66.common.email.entity.EmailAttachment;
-import com.xiaohe66.common.email.entity.EmailImage;
-import com.xiaohe66.common.email.entity.EmailSender;
+import com.xiaohe66.common.email.bo.Email;
+import com.xiaohe66.common.email.bo.EmailAttachment;
+import com.xiaohe66.common.email.bo.EmailImage;
+import com.xiaohe66.common.email.bo.EmailSenderInfo;
 import com.xiaohe66.common.email.ex.EmailSendException;
-import com.xiaohe66.common.email.util.EmailUtils;
 import com.xiaohe66.common.util.Check;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
@@ -25,10 +25,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiaohe
@@ -37,18 +37,22 @@ import java.util.Properties;
 @Slf4j
 public class EmailSendService {
 
-    private static Map<EmailSender, EmailSendService> instanceMap = new HashMap<>();
+    /**
+     * 发件人缓存
+     * 一般来说，发件人不会怎么换，因此可以缓存下来
+     */
+    private static final Map<EmailSenderInfo, EmailSendService> instanceMap = new ConcurrentHashMap<>();
 
     private Session session;
 
-    private EmailSender sender;
+    private final EmailSenderInfo sender;
 
-    private EmailSendService(EmailSender sender) {
+    private EmailSendService(EmailSenderInfo sender) {
         this.sender = sender;
         init();
     }
 
-    public static synchronized EmailSendService getInstance(EmailSender sender) {
+    public static synchronized EmailSendService getInstance(EmailSenderInfo sender) {
         if (sender == null) {
             throw new IllegalArgumentException("发件人不能为空");
         }
@@ -60,9 +64,6 @@ public class EmailSendService {
 
         log.info("初始化邮件发送服务session");
         log.debug("emailSender : {}", sender);
-
-        // todo : 升级到 jdk 11后报错，注释后还可以使用，先观察暂不处理
-//        Security.addProvider(new Provider());
 
         Properties props = new Properties();
         props.setProperty("mail.smtp.host", sender.getSmtpHost());
@@ -79,23 +80,23 @@ public class EmailSendService {
     }
 
     public void sendEmail(Email email) throws MessagingException {
-        log.info("发送邮件,目标 : {}", email.getAddressArrStr());
+        log.info("发送邮件,目标 : {}", email.getAddresses());
         check(email);
         try {
             MimeMessage message = createMimeMessage(email);
             Transport.send(message, sender.getEmailAccount(), sender.getEmailPwd());
-            log.info("邮件发送成功,目标 : {}", email.getAddressArrStr());
+            log.info("邮件发送成功,目标 : {}", email.getAddresses());
 
         } catch (SendFailedException e) {
             log.warn("邮件目标地址无效, message : {}", e.getMessage());
             handleSendFailedException(e, email);
 
         } catch (MessagingException e) {
-            log.error("网络连接失败, message : {}, 目标 : {}", e.getMessage(), email.getAddressArrStr());
+            log.error("网络连接失败, message : {}, 目标 : {}", e.getMessage(), email.getAddresses());
             throw e;
 
         } catch (Exception e) {
-            log.error("邮件发送失败, message : {}, 目标 : {}", e.getMessage(), email.getAddressArrStr());
+            log.error("邮件发送失败, message : {}, 目标 : {}", e.getMessage(), email.getAddresses());
             throw new EmailSendException(e);
         }
     }
@@ -111,11 +112,11 @@ public class EmailSendService {
 
         if (log.isWarnEnabled()) {
 
-            log.warn("错误的邮箱地址 : {}", joinAddressString(invalidAddresses));
+            log.warn("错误的邮箱地址 : {}", EmailHelper.joinAddressString(invalidAddresses));
 
-            log.warn("正确已发送的邮箱地址 : {}", joinAddressString(validSentAddresses));
+            log.warn("正确已发送的邮箱地址 : {}", EmailHelper.joinAddressString(validSentAddresses));
 
-            log.warn("正确未发送的邮箱地址 : {}", joinAddressString(validUnsentAddresses));
+            log.warn("正确未发送的邮箱地址 : {}", EmailHelper.joinAddressString(validUnsentAddresses));
         }
 
         if (validUnsentAddresses.length == 0) {
@@ -127,7 +128,7 @@ public class EmailSendService {
         List<InternetAddress> targetAddressList = new ArrayList<>(targetAddressArr.length);
         Collections.addAll(targetAddressList, targetAddressArr);
 
-        InternetAddress[] carbonCopyArr = email.getCarbonCopyArr();
+        InternetAddress[] carbonCopyArr = email.getCcArr();
         List<InternetAddress> cssList = new ArrayList<>(carbonCopyArr.length);
         Collections.addAll(cssList, carbonCopyArr);
 
@@ -139,7 +140,7 @@ public class EmailSendService {
         }
 
         email.setAddressArr(targetAddressList.toArray(new InternetAddress[0]));
-        email.setCarbonCopyArr(cssList.toArray(new InternetAddress[0]));
+        email.setCcArr(cssList.toArray(new InternetAddress[0]));
 
         try {
             MimeMessage message = createMimeMessage(email);
@@ -153,17 +154,6 @@ public class EmailSendService {
             log.error("邮件发送异常，经过处理后仍无法正常发送, message : {}", e1.getMessage());
             throw new EmailSendException(e1);
         }
-    }
-
-    private String joinAddressString(InternetAddress[] addresses) {
-        if (addresses == null) {
-            return "";
-        }
-        StringBuilder addressStr = new StringBuilder();
-        for (InternetAddress address : addresses) {
-            addressStr.append(",").append(address.getAddress());
-        }
-        return addressStr.length() > 0 ? addressStr.substring(1) : "";
     }
 
     private InternetAddress[] castToInternetAddress(Address[] addresses) {
@@ -203,8 +193,11 @@ public class EmailSendService {
         message.setRecipients(Message.RecipientType.TO, email.getAddressArr());
 
         // 抄送
-        if (email.getCarbonCopyArr() != null) {
-            message.setRecipients(Message.RecipientType.CC, email.getCarbonCopyArr());
+        if (email.getCcArr() != null) {
+            message.setRecipients(Message.RecipientType.CC, email.getCcArr());
+
+        } else if (StringUtils.isNotEmpty(email.getCcs())) {
+            message.setRecipients(Message.RecipientType.CC, EmailHelper.splitAddress(email.getCcs()));
         }
 
         // 混合消息体
@@ -223,7 +216,7 @@ public class EmailSendService {
 
         if (attachmentList != null) {
             for (EmailAttachment emailAttachment : attachmentList) {
-                BodyPart attachment = EmailUtils.buildAttachmentBodyPart(emailAttachment);
+                BodyPart attachment = EmailHelper.buildAttachmentBodyPart(emailAttachment);
 
                 mime.addBodyPart(attachment);
             }
@@ -242,7 +235,7 @@ public class EmailSendService {
         if (Check.isNotEmpty(imageList)) {
             for (EmailImage emailImage : imageList) {
 
-                BodyPart imagePart = EmailUtils.buildImageBodyPart(emailImage);
+                BodyPart imagePart = EmailHelper.buildImageBodyPart(emailImage);
                 content.addBodyPart(imagePart);
             }
         }

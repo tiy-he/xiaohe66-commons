@@ -1,6 +1,6 @@
 package com.xiaohe66.common.email.service;
 
-import com.xiaohe66.common.email.entity.EmailAddressee;
+import com.xiaohe66.common.email.bo.EmailAddressee;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

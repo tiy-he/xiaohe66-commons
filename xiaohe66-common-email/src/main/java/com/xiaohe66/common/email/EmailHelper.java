@@ -1,8 +1,9 @@
-package com.xiaohe66.common.email.util;
+package com.xiaohe66.common.email;
 
-import com.xiaohe66.common.email.entity.EmailAttachment;
-import com.xiaohe66.common.email.entity.EmailImage;
+import com.xiaohe66.common.email.bo.EmailAttachment;
+import com.xiaohe66.common.email.bo.EmailImage;
 import com.xiaohe66.common.email.ex.EmailException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +22,11 @@ import java.io.UnsupportedEncodingException;
  * @author xiaohe
  * @time 2020.03.06 10:49
  */
-public class EmailUtils {
+public class EmailHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(EmailUtils.class);
+    private static final Logger log = LoggerFactory.getLogger(EmailHelper.class);
 
-    private EmailUtils() {
+    private EmailHelper() {
     }
 
     /**
@@ -86,6 +87,17 @@ public class EmailUtils {
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setDataHandler(dataHandler);
         return bodyPart;
+    }
+
+    public static String joinAddressString(InternetAddress[] addresses) {
+        if (ArrayUtils.isEmpty(addresses)) {
+            return "";
+        }
+        StringBuilder addressStr = new StringBuilder();
+        for (InternetAddress address : addresses) {
+            addressStr.append(",").append(address.getAddress());
+        }
+        return addressStr.length() > 0 ? addressStr.substring(1) : "";
     }
 
 }

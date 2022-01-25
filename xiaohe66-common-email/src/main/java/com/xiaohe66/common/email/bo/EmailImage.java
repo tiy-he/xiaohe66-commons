@@ -1,4 +1,4 @@
-package com.xiaohe66.common.email.entity;
+package com.xiaohe66.common.email.bo;
 
 import lombok.Data;
 
@@ -13,7 +13,6 @@ public class EmailImage {
 
     private String url;
     private File imageFile;
-
 
     public EmailImage(String url, File imageFile) {
         this.url = url;

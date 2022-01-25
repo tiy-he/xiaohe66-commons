@@ -1,6 +1,8 @@
-package com.xiaohe66.common.email.entity;
+package com.xiaohe66.common.email.bo;
 
 /**
+ * 用于收件箱
+ *
  * @author xiaohe
  * @time 2020.12.07 14:57
  */

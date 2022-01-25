@@ -1,11 +1,11 @@
 package com.xiaohe66.common.email.service;
 
-import com.xiaohe66.common.email.entity.Email;
-import com.xiaohe66.common.email.entity.EmailAttachment;
-import com.xiaohe66.common.email.entity.EmailImage;
-import com.xiaohe66.common.email.entity.EmailSender;
-import com.xiaohe66.common.email.util.EmailUtils;
-import org.junit.Test;
+import com.xiaohe66.common.email.EmailSendService;
+import com.xiaohe66.common.email.bo.Email;
+import com.xiaohe66.common.email.bo.EmailAttachment;
+import com.xiaohe66.common.email.bo.EmailImage;
+import com.xiaohe66.common.email.bo.EmailSenderInfo;
+import com.xiaohe66.common.email.EmailHelper;
 
 import javax.mail.MessagingException;
 import java.io.File;
@@ -19,10 +19,10 @@ public class EmailSendServiceTest {
 
         String pwd = "";
 
-        EmailSender emailSender = new EmailSender("tingyuanhe@ismartgo.com", "ty", pwd, "smtp.exmail.qq.com");
+        EmailSenderInfo emailSender = new EmailSenderInfo("tingyuanhe@ismartgo.com", "ty", pwd, "smtp.exmail.qq.com");
         EmailSendService emailSendService = EmailSendService.getInstance(emailSender);
 
-        Email email = new Email(EmailUtils.splitAddress("tingyuanhe@ismartgo.com"), "测试主题");
+        Email email = new Email(EmailHelper.splitAddress("tingyuanhe@ismartgo.com"), "测试主题");
 
         List<EmailAttachment> attachmentList = Arrays.asList(
                 new EmailAttachment("文件1.txt", new File("C:\\Users\\Xiao He\\Desktop\\1.txt")),

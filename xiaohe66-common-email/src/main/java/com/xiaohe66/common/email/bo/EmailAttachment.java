@@ -1,4 +1,4 @@
-package com.xiaohe66.common.email.entity;
+package com.xiaohe66.common.email.bo;
 
 import lombok.Data;
 
@@ -12,6 +12,8 @@ import java.io.File;
  */
 @Data
 public class EmailAttachment {
+
+    // TODO : 需要支持文件流输入
 
     /**
      * 附件的名称，这个名称会显示在邮件中
