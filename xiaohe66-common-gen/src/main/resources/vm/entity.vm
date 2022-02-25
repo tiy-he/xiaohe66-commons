@@ -1,0 +1,38 @@
+package $package;
+
+#if($hasTableField)import com.baomidou.mybatisplus.annotation.TableField;
+#end
+import com.baomidou.mybatisplus.annotation.TableName;
+#if($baseClass)import $baseClassPackage.$baseClass;
+#end
+import lombok.Data;
+#if($baseClass)import lombok.EqualsAndHashCode;
+#end
+
+#if($hasLocalDate)import java.time.LocalDate;
+#end
+#if($hasLocalDateTime)import java.time.LocalDateTime;
+#end
+/**
+* @author xiaohe66
+* @since $time
+*/
+#if($baseClass)@EqualsAndHashCode(callSuper = true)
+#end
+@Data
+@TableName("$tableName")
+public class $className #if($baseClass)extends $baseClass #end{
+
+#if($fields)#foreach($field in $fields)
+    #if($field.hasTableField)
+
+    @TableField("`$field.name`")
+    private $field.type $field.name;
+
+    #else
+    private $field.type $field.name;
+    #end
+#end
+
+#end
+}

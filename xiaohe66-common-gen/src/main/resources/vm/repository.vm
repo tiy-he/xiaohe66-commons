@@ -1,0 +1,19 @@
+package $package;
+
+import $baseClassPackage.$baseClass;
+import ${entityPackage}.${entityName};
+import ${mapperPackage}.${entityName}Mapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+
+/**
+* @author xiaohe
+* @since $time
+*/
+@Repository
+@Slf4j
+@RequiredArgsConstructor
+public class ${entityName}Repository extends $baseClass<${entityName}Mapper,${entityName}>{
+
+}
