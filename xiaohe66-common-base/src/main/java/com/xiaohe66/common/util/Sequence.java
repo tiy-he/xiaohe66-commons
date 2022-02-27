@@ -160,6 +160,10 @@ public final class Sequence {
             try {
                 // 超时等待，释放cpu后若未在指定时间内被激活则自动激活
                 wait(offset << 1);
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }

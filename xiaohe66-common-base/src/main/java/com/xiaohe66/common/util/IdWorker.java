@@ -30,6 +30,13 @@ public final class IdWorker {
         return String.valueOf(sequence.nextId());
     }
 
+    /**
+     * 根据指定时间生成一个id
+     */
+    public static long buildId(long timestamp) {
+        return ((timestamp - START_TIME) << Sequence.TIMESTAMP_LEFT_SHIFT);
+    }
+
     public static long takeTimestamp(long id) {
         return (id >> Sequence.TIMESTAMP_LEFT_SHIFT) + START_TIME;
     }
