@@ -28,6 +28,7 @@ module xiaohe.common.base {
 
     requires static html2pdf;
     requires static java.management;
+    requires static com.auth0.jwt;
 
 
 }
