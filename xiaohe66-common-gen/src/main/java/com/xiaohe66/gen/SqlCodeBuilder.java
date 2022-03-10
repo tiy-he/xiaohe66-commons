@@ -24,6 +24,10 @@ public class SqlCodeBuilder extends AbstractCodeBuilder {
     @Setter
     private TableDefinitionReader reader = new SqlTableDefinitionReader();
 
+    public SqlCodeBuilder() {
+
+    }
+
     public SqlCodeBuilder(DefaultCodeBuildProperty property) {
 
         List<CodeTemplate> builders = List.of(new EntityCodeTemplate(property.toEntityCodeBuildProperty()),
@@ -40,7 +44,7 @@ public class SqlCodeBuilder extends AbstractCodeBuilder {
         TableDefinition tableDefinition = reader.read(sql);
 
         JavaDefinition definition = definitionConverter.convert(tableDefinition);
-        definition.setClassName(name);
+        definition.setClassName(uppercaseFirst(name));
 
         this.build(definition);
     }

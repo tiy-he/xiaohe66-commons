@@ -3,9 +3,13 @@ package com.xiaohe66.gen.template;
 import com.xiaohe66.gen.template.bo.CodeTemplateProperty;
 import lombok.Getter;
 import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * @author xiaohe
@@ -31,5 +35,19 @@ public abstract class AbstractCodeTemplate implements CodeTemplate {
         this.property = property;
         this.template = VELOCITY_ENGINE.getTemplate(templateFileName);
         this.templateName = templateFileName;
+    }
+
+    protected final VelocityContext genDefaultContext(String entityName) {
+
+        VelocityContext velocityContext = new VelocityContext();
+
+        velocityContext.put("package", property.getClassPackage());
+        velocityContext.put("entityName", entityName);
+
+        String time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        velocityContext.put("time", time);
+
+        return velocityContext;
     }
 }

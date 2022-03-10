@@ -44,4 +44,15 @@ public abstract class AbstractCodeBuilder {
             }
         }
     }
+
+    protected String uppercaseFirst(String name) {
+
+        char c = name.charAt(0);
+        char c1 = Character.toUpperCase(c);
+        if (c1 == c) {
+            return name;
+        }
+
+        return c1 + name.substring(1);
+    }
 }

@@ -21,7 +21,7 @@ public class JdbcCodeBuilder extends AbstractCodeBuilder {
 
     private final JdbcTableDefinitionReader reader;
 
-    public JdbcCodeBuilder(DefaultCodeBuildProperty property, DataSourceProperty dataSourceProperty) {
+    public JdbcCodeBuilder(DataSourceProperty dataSourceProperty) {
 
         MysqlDataSource dataSource = new MysqlDataSource();
         dataSource.setURL(dataSourceProperty.getUrl());
@@ -31,6 +31,10 @@ public class JdbcCodeBuilder extends AbstractCodeBuilder {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
         this.reader = new JdbcTableDefinitionReader(jdbcTemplate);
+    }
+
+    public JdbcCodeBuilder(DataSourceProperty dataSourceProperty, DefaultCodeBuildProperty property) {
+        this(dataSourceProperty);
 
         List<CodeTemplate> builders = List.of(new EntityCodeTemplate(property.toEntityCodeBuildProperty()),
                 new MapperCodeTemplate(property.toMapperCodeBuildProperty()),
@@ -46,7 +50,7 @@ public class JdbcCodeBuilder extends AbstractCodeBuilder {
         TableDefinition tableDefinition = reader.read(tableName);
 
         JavaDefinition definition = definitionConverter.convert(tableDefinition);
-        definition.setClassName(name);
+        definition.setClassName(uppercaseFirst(name));
 
         this.build(definition);
     }

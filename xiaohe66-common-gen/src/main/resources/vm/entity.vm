@@ -14,9 +14,9 @@ import lombok.Data;
 #if($hasLocalDateTime)import java.time.LocalDateTime;
 #end
 /**
-* @author xiaohe66
-* @since $time
-*/
+ * @author xiaohe66
+ * @since $time
+ */
 #if($baseClass)@EqualsAndHashCode(callSuper = true)
 #end
 @Data

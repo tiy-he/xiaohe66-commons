@@ -30,10 +30,14 @@ public class EntityCodeTemplate extends AbstractCodeTemplate {
      */
     @NonNull
     @Setter
-    private List<String> tableKeyword = Arrays.asList("name", "status", "date");
+    private List<String> tableKeyword = Arrays.asList("code", "date", "desc", "name", "status", "year");
 
     public EntityCodeTemplate(CodeTemplateProperty property) {
         super(property, "vm/entity.vm");
+    }
+
+    public EntityCodeTemplate(CodeTemplateProperty property, String templateFileName) {
+        super(property, templateFileName);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class EntityCodeTemplate extends AbstractCodeTemplate {
         return definition.getClassName() + ".java";
     }
 
-    private VelocityContext buildContext(JavaDefinition definition) {
+    protected VelocityContext buildContext(JavaDefinition definition) {
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("package", property.getClassPackage());
@@ -62,7 +66,7 @@ public class EntityCodeTemplate extends AbstractCodeTemplate {
         velocityContext.put("className", definition.getClassName());
         velocityContext.put("tableName", definition.getTableDefinition().getTableName());
 
-        List<Map<String, String>> fields = definition.getFields().stream()
+        List<Map<String, Object>> fields = definition.getFields().stream()
                 .map(field -> convert(velocityContext, field))
                 .collect(Collectors.toList());
 
@@ -75,7 +79,7 @@ public class EntityCodeTemplate extends AbstractCodeTemplate {
         return velocityContext;
     }
 
-    private Map<String, String> convert(VelocityContext velocityContext, JavaField field) {
+    protected Map<String, Object> convert(VelocityContext velocityContext, JavaField field) {
 
         if (field.getType() == JavaField.JavaType.LOCAL_DATE) {
             velocityContext.put("hasLocalDate", true);
@@ -84,11 +88,12 @@ public class EntityCodeTemplate extends AbstractCodeTemplate {
             velocityContext.put("hasLocalDateTime", true);
         }
 
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("type", field.getType().getValue());
         map.put("name", field.getName());
 
         if (tableKeyword.contains(field.getName())) {
+            map.put("hasTableField", true);
             velocityContext.put("hasTableField", true);
         }
 

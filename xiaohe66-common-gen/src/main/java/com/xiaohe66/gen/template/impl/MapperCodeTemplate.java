@@ -19,6 +19,10 @@ public class MapperCodeTemplate extends AbstractCodeTemplate {
         super(property, "vm/mapper.vm");
     }
 
+    public MapperCodeTemplate(MapperCodeBuildProperty property, String templateFileName) {
+        super(property, templateFileName);
+    }
+
     @Override
     public void gen(JavaDefinition definition, Writer writer) {
 

@@ -5,9 +5,9 @@ package $package;
 import ${entityPackage}.${entityName};
 
 /**
-* @author xiaohe
-* @since $time
-*/
+ * @author xiaohe
+ * @since $time
+ */
 public interface ${entityName}Mapper #if($baseClass)extends $baseClass<${entityName}> #end{
 
 }

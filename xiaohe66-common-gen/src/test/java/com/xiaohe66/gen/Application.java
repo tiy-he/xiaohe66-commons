@@ -60,7 +60,7 @@ public class Application {
 
     public static void buildWithDataSource() throws IOException {
 
-        JdbcCodeBuilder builder = new JdbcCodeBuilder(getDefaultCodeBuildProperty(), getDataSourceProperty());
+        JdbcCodeBuilder builder = new JdbcCodeBuilder(getDataSourceProperty(),getDefaultCodeBuildProperty());
 
         // 加上这个就是输出文件，不加就是输出控制台
         // String path = new File("").getCanonicalPath() + "\\src\\test\\java";

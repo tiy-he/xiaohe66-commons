@@ -19,6 +19,10 @@ public class RepositoryCodeTemplate extends AbstractCodeTemplate {
         super(property, "vm/repository.vm");
     }
 
+    public RepositoryCodeTemplate(RepositoryCodeBuildProperty property, String templateFileName) {
+        super(property, templateFileName);
+    }
+
     @Override
     public void gen(JavaDefinition definition, Writer writer) {
 
