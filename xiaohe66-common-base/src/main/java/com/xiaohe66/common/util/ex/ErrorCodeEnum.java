@@ -47,6 +47,7 @@ public enum ErrorCodeEnum {
      */
     NOT_FOUND(40400, "对象不存在"),
     NOT_FOUND_URL(40410, "接口不支持"),
+    NOT_FOUND_URL_METHOD(40411, "请求类型不支持"),
     NOT_FOUND_DATA(40420, "对象不存在"),
 
     ERROR(50000, "系统繁忙");
