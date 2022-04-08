@@ -14,10 +14,10 @@ public class IsExistId extends AbstractMethod {
     @Override
     public MappedStatement injectMappedStatement(Class<?> mapperClass, Class<?> modelClass, TableInfo tableInfo) {
 
-        String sql = String.format("select ifNull((select 1 from %s where ${fieldName} = #{value} limit 1),0)", tableInfo.getTableName());
+        String sql = String.format("select ifNull((select 1 from %s where id = #{id} limit 1),0)", tableInfo.getTableName());
 
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
 
-        return this.addSelectMappedStatementForOther(mapperClass, "isExist", sqlSource, Boolean.TYPE);
+        return this.addSelectMappedStatementForOther(mapperClass, "isExistId", sqlSource, Boolean.TYPE);
     }
 }
