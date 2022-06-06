@@ -60,7 +60,7 @@ public class CheckSignAop {
 
             String body = getBody(request, joinPoint);
             String secret = secretSupplier.getSecret(appId);
-            Assert.notEmpty(secret, ErrorCodeEnum.NOT_FOUND_ACCOUNT);
+            Assert.requireNotEmpty(secret, ErrorCodeEnum.NOT_FOUND_ACCOUNT);
 
             String queryString = StringUtils.trimToEmpty(request.getQueryString());
 
@@ -87,7 +87,7 @@ public class CheckSignAop {
     protected String getHeader(HttpServletRequest request, String name) {
 
         String value = request.getHeader(name);
-        Assert.notEmpty(value, ErrorCodeEnum.ILLEGAL_OPERATE, "缺少" + name);
+        Assert.requireNotEmpty(value, ErrorCodeEnum.ILLEGAL_OPERATE, "缺少" + name);
 
         return value;
     }

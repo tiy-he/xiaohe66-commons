@@ -2,6 +2,7 @@ package com.xiaohe66.common.util;
 
 import com.xiaohe66.common.util.ex.BusinessException;
 import com.xiaohe66.common.util.ex.ErrorCodeEnum;
+import com.xiaohe66.common.util.ex.IErrorCode;
 
 import java.util.Collection;
 import java.util.Map;
@@ -17,61 +18,61 @@ public class Assert {
 
     }
 
-    public static void isTrue(boolean bool) {
+    public static void requireTrue(boolean bool) {
         if (!bool) {
             throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL);
         }
     }
 
-    public static void isFalse(boolean bool) {
+    public static void requireFalse(boolean bool) {
         if (bool) {
             throw new BusinessException(ErrorCodeEnum.PARAM_ILLEGAL);
         }
     }
 
-    public static void isNull(Object object) {
+    public static void requireNull(Object object) {
         if (object != null) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void isEmpty(String object) {
+    public static void requireEmpty(String object) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void isEmpty(Collection<?> object) {
+    public static void requireEmpty(Collection<?> object) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void isEmpty(Map<?, ?> object) {
+    public static void requireEmpty(Map<?, ?> object) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void notNull(Object object) {
+    public static void requireNotNull(Object object) {
         if (object == null) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void notEmpty(String object) {
+    public static void requireNotEmpty(String object) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void notEmpty(Collection<?> object) {
+    public static void requireNotEmpty(Collection<?> object) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
     }
 
-    public static void notEmpty(Map<?, ?> object) {
+    public static void requireNotEmpty(Map<?, ?> object) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(ErrorCodeEnum.PARAM_EMPTY);
         }
@@ -89,205 +90,205 @@ public class Assert {
         }
     }
 
-    public static void isTrue(boolean bool, ErrorCodeEnum errorCode) {
+    public static void requireTrue(boolean bool, IErrorCode errorCode) {
         if (!bool) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isFalse(boolean bool, ErrorCodeEnum errorCode) {
+    public static void requireFalse(boolean bool, IErrorCode errorCode) {
         if (bool) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isNull(Object object, ErrorCodeEnum errorCode) {
+    public static void requireNull(Object object, IErrorCode errorCode) {
         if (object != null) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isEmpty(String object, ErrorCodeEnum errorCode) {
+    public static void requireEmpty(String object, IErrorCode errorCode) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isEmpty(Collection<?> object, ErrorCodeEnum errorCode) {
+    public static void requireEmpty(Collection<?> object, IErrorCode errorCode) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isEmpty(Map<?, ?> object, ErrorCodeEnum errorCode) {
+    public static void requireEmpty(Map<?, ?> object, IErrorCode errorCode) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void notNull(Object object, ErrorCodeEnum errorCode) {
+    public static void requireNotNull(Object object, IErrorCode errorCode) {
         if (object == null) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void notEmpty(String object, ErrorCodeEnum errorCode) {
+    public static void requireNotEmpty(String object, IErrorCode errorCode) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void notEmpty(Collection<?> object, ErrorCodeEnum errorCode) {
+    public static void requireNotEmpty(Collection<?> object, IErrorCode errorCode) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void notEmpty(Map<?, ?> object, ErrorCodeEnum errorCode) {
+    public static void requireNotEmpty(Map<?, ?> object, IErrorCode errorCode) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void lt(long value, long num, ErrorCodeEnum errorCode) {
+    public static void lt(long value, long num, IErrorCode errorCode) {
         if (value >= num) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void gt(long value, long num, ErrorCodeEnum errorCode) {
+    public static void gt(long value, long num, IErrorCode errorCode) {
         if (value <= num) {
             throw new BusinessException(errorCode);
         }
     }
 
-    public static void isTrue(boolean bool, ErrorCodeEnum errorCode, String message) {
+    public static void requireTrue(boolean bool, IErrorCode errorCode, String message) {
         if (!bool) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isFalse(boolean bool, ErrorCodeEnum errorCode, String message) {
+    public static void requireFalse(boolean bool, IErrorCode errorCode, String message) {
         if (bool) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isNull(Object object, ErrorCodeEnum errorCode, String message) {
+    public static void requireNull(Object object, IErrorCode errorCode, String message) {
         if (object != null) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isEmpty(String object, ErrorCodeEnum errorCode, String message) {
+    public static void requireEmpty(String object, IErrorCode errorCode, String message) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isEmpty(Collection<?> object, ErrorCodeEnum errorCode, String message) {
+    public static void requireEmpty(Collection<?> object, IErrorCode errorCode, String message) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isEmpty(Map<?, ?> object, ErrorCodeEnum errorCode, String message) {
+    public static void requireEmpty(Map<?, ?> object, IErrorCode errorCode, String message) {
         if (object != null && !object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void notNull(Object object, ErrorCodeEnum errorCode, String message) {
+    public static void requireNotNull(Object object, IErrorCode errorCode, String message) {
         if (object == null) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void notEmpty(String object, ErrorCodeEnum errorCode, String message) {
+    public static void requireNotEmpty(String object, IErrorCode errorCode, String message) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void notEmpty(Collection<?> object, ErrorCodeEnum errorCode, String message) {
+    public static void requireNotEmpty(Collection<?> object, IErrorCode errorCode, String message) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void notEmpty(Map<?, ?> object, ErrorCodeEnum errorCode, String message) {
+    public static void requireNotEmpty(Map<?, ?> object, IErrorCode errorCode, String message) {
         if (object == null || object.isEmpty()) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void lt(long value, long num, ErrorCodeEnum errorCode, String message) {
+    public static void lt(long value, long num, IErrorCode errorCode, String message) {
         if (value >= num) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void gt(long value, long num, ErrorCodeEnum errorCode, String message) {
+    public static void gt(long value, long num, IErrorCode errorCode, String message) {
         if (value <= num) {
             throw new BusinessException(errorCode, message);
         }
     }
 
-    public static void isTrue(boolean bool, Supplier<RuntimeException> supplier) {
+    public static void requireTrue(boolean bool, Supplier<RuntimeException> supplier) {
         if (!bool) {
             throw supplier.get();
         }
     }
 
-    public static void isFalse(boolean bool, Supplier<RuntimeException> supplier) {
+    public static void requireFalse(boolean bool, Supplier<RuntimeException> supplier) {
         if (bool) {
             throw supplier.get();
         }
     }
 
-    public static void isNull(Object object, Supplier<RuntimeException> supplier) {
+    public static void requireNull(Object object, Supplier<RuntimeException> supplier) {
         if (object != null) {
             throw supplier.get();
         }
     }
 
-    public static void isEmpty(String object, Supplier<RuntimeException> supplier) {
+    public static void requireEmpty(String object, Supplier<RuntimeException> supplier) {
         if (object != null && !object.isEmpty()) {
             throw supplier.get();
         }
     }
 
-    public static void isEmpty(Collection<?> object, Supplier<RuntimeException> supplier) {
+    public static void requireEmpty(Collection<?> object, Supplier<RuntimeException> supplier) {
         if (object != null && !object.isEmpty()) {
             throw supplier.get();
         }
     }
 
-    public static void isEmpty(Map<?, ?> object, Supplier<RuntimeException> supplier) {
+    public static void requireEmpty(Map<?, ?> object, Supplier<RuntimeException> supplier) {
         if (object != null && !object.isEmpty()) {
             throw supplier.get();
         }
     }
 
-    public static void notNull(Object object, Supplier<RuntimeException> supplier) {
+    public static void requireNotNull(Object object, Supplier<RuntimeException> supplier) {
         if (object == null) {
             throw supplier.get();
         }
     }
 
-    public static void notEmpty(String object, Supplier<RuntimeException> supplier) {
+    public static void requireNotEmpty(String object, Supplier<RuntimeException> supplier) {
         if (object == null || object.isEmpty()) {
             throw supplier.get();
         }
     }
 
-    public static void notEmpty(Collection<?> object, Supplier<RuntimeException> supplier) {
+    public static void requireNotEmpty(Collection<?> object, Supplier<RuntimeException> supplier) {
         if (object == null || object.isEmpty()) {
             throw supplier.get();
         }
     }
 
-    public static void notEmpty(Map<?, ?> object, Supplier<RuntimeException> supplier) {
+    public static void requireNotEmpty(Map<?, ?> object, Supplier<RuntimeException> supplier) {
         if (object == null || object.isEmpty()) {
             throw supplier.get();
         }

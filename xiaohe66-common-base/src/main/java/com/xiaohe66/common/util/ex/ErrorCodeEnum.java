@@ -1,6 +1,5 @@
 package com.xiaohe66.common.util.ex;
 
-import com.xiaohe66.common.dto.R;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -12,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public enum ErrorCodeEnum {
+public enum ErrorCodeEnum implements IErrorCode {
 
     /**
      * 枚举
@@ -54,13 +53,5 @@ public enum ErrorCodeEnum {
 
     private final int code;
     private final String msg;
-
-    public BusinessException toEx() {
-        return new BusinessException(this);
-    }
-
-    public <T> R<T> toR() {
-        return R.build(this);
-    }
 
 }

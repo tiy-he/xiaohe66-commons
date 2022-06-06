@@ -2,6 +2,7 @@ package com.xiaohe66.common.dto;
 
 import com.xiaohe66.common.util.ex.BusinessException;
 import com.xiaohe66.common.util.ex.ErrorCodeEnum;
+import com.xiaohe66.common.util.ex.IErrorCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -84,11 +85,11 @@ public class R<T> {
         return new R<>(code, data, msg);
     }
 
-    public static <T> R<T> build(ErrorCodeEnum codeEnum) {
+    public static <T> R<T> build(IErrorCode codeEnum) {
         return new R<>(codeEnum.getCode(), null, codeEnum.getMsg());
     }
 
-    public static <T> R<T> build(ErrorCodeEnum codeEnum, String msg) {
+    public static <T> R<T> build(IErrorCode codeEnum, String msg) {
         return new R<>(codeEnum.getCode(), null, msg);
     }
 

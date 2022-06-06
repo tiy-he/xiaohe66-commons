@@ -24,7 +24,7 @@ public class CurrentAccount {
     private final Set<String> permissions = new HashSet<>();
 
     public void addRole(String role) {
-        Assert.notEmpty(role);
+        Assert.requireNotEmpty(role);
         roles.add(role);
     }
 
@@ -45,7 +45,7 @@ public class CurrentAccount {
     }
 
     public void addPermission(String permission) {
-        Assert.notEmpty(permission);
+        Assert.requireNotEmpty(permission);
         permissions.add(permission);
     }
 
