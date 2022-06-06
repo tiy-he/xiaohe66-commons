@@ -1,5 +1,7 @@
 package com.xiaohe66.common.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -10,7 +12,10 @@ import java.util.stream.Collectors;
  * @author xiaohe
  * @time 2020.07.03 16:15
  * @see com.google.common.base.Joiner
+ * @see StringUtils#join(Object[]);
+ * @deprecated 使用 {@link StringUtils}
  */
+@Deprecated
 public class JoinUtils {
 
     private JoinUtils() {
@@ -109,7 +114,7 @@ public class JoinUtils {
         return obj == null ? "" : obj.toString();
     }
 
-    public static String join(List<Object> list){
+    public static String join(List<Object> list) {
         return list.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(","));

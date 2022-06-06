@@ -5,8 +5,11 @@ import java.util.Map;
 
 /**
  * @author xiaohe
- * @time 2019-10-28 11:07
+ * @see Assert
+ * @since 2019-10-28 11:07
+ * @deprecated 2022.06.06, 建议使用 {@link Assert}
  */
+@Deprecated
 public class Check {
 
     private Check() {
@@ -28,7 +31,7 @@ public class Check {
         return obj != null && !obj.isEmpty();
     }
 
-    public static boolean isNotEmpty(Map<?,?> obj) {
+    public static boolean isNotEmpty(Map<?, ?> obj) {
         return obj != null && !obj.isEmpty();
     }
 
@@ -48,7 +51,7 @@ public class Check {
         return obj == null || obj.isEmpty();
     }
 
-    public static boolean isEmpty(Map<?,?> obj) {
+    public static boolean isEmpty(Map<?, ?> obj) {
         return obj == null || obj.isEmpty();
     }
 
@@ -70,7 +73,7 @@ public class Check {
         }
     }
 
-    public static void notEmpty(Map<?,?> obj) {
+    public static void notEmpty(Map<?, ?> obj) {
         if (obj == null || obj.isEmpty()) {
             threadEx();
         }
@@ -100,17 +103,17 @@ public class Check {
         }
     }
 
-    public static void notEmpty(Map<?,?> obj, String paramName) {
+    public static void notEmpty(Map<?, ?> obj, String paramName) {
         if (obj == null || obj.isEmpty()) {
             threadEx(paramName);
         }
     }
 
-    private static void threadEx(){
+    private static void threadEx() {
         throw new IllegalArgumentException("参数不能为空");
     }
 
-    private static void threadEx(String paramName){
-        throw new IllegalArgumentException("参数["+paramName+"]不能为空");
+    private static void threadEx(String paramName) {
+        throw new IllegalArgumentException("参数[" + paramName + "]不能为空");
     }
 }

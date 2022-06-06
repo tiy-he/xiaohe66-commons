@@ -1,13 +1,16 @@
 package com.xiaohe66.common.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * String 工具类
  *
  * @author xiaohe
  * @time 17-10-29 029
+ * @deprecated 可以使用 {@link StringUtils}
  */
+@Deprecated
 @Slf4j
 public class StrUtils {
 
