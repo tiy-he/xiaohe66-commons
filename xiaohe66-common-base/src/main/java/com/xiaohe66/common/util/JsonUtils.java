@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 /**
  * jackson 是使用实体类的 get/set 进行取值和设值的，因此若实体类没有对应的 get/set 方法则会报错。
@@ -107,6 +108,10 @@ public class JsonUtils {
         JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, cls);
 
         return objectMapper.readValue(json, javaType);
+    }
+
+    public static <T> T formatObject(Map<String, ?> param, Class<T> cls) {
+        return objectMapper.convertValue(param, cls);
     }
 
     public static ObjectNode formatObjectNode(String json) throws JsonProcessingException {
