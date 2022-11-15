@@ -1,18 +1,22 @@
 package com.xiaohe66.common.util;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author xiaohe
- * @time 2020.07.15 12:01
+ * @since 2020.07.15 12:01
  */
 public class LocalDateUtils {
 
-    private LocalDateUtils(){
+    private LocalDateUtils() {
 
     }
 
@@ -28,13 +32,38 @@ public class LocalDateUtils {
         return list;
     }
 
+    /**
+     * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
+     */
+    public static int getDays2(LocalDate begin, LocalDate end) {
+        return (int) ChronoUnit.DAYS.between(begin, end);
+    }
+
+    /**
+     * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
+     */
     public static int getDays(LocalDate begin, LocalDate end) {
-        return (int) ChronoUnit.DAYS.between(begin, end) + 1;
+        return Period.between(begin, end).getDays();
+    }
+
+    /**
+     * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
+     */
+    public static int getDays(LocalDateTime begin, LocalDateTime end) {
+        return (int) Duration.between(begin, end).toDays();
     }
 
     public static LocalDate getMonday(LocalDate date) {
         DayOfWeek week = date.getDayOfWeek();
-        return date.minusDays((long)week.getValue() - 1);
+        return date.minusDays((long) week.getValue() - 1);
+    }
+
+    public static long getTime(LocalDate date) {
+        return date.atStartOfDay(ZoneId.systemDefault()).toEpochSecond();
+    }
+
+    public static long getTime(LocalDateTime date) {
+        return date.atZone(ZoneId.systemDefault()).toEpochSecond();
     }
 
 }
