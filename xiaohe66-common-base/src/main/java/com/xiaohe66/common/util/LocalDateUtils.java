@@ -1,12 +1,11 @@
 package com.xiaohe66.common.util;
 
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,22 +34,8 @@ public class LocalDateUtils {
     /**
      * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
      */
-    public static int getDays2(LocalDate begin, LocalDate end) {
+    public static int getDays(Temporal begin, Temporal end) {
         return (int) ChronoUnit.DAYS.between(begin, end);
-    }
-
-    /**
-     * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
-     */
-    public static int getDays(LocalDate begin, LocalDate end) {
-        return Period.between(begin, end).getDays();
-    }
-
-    /**
-     * 计算相差几天，例：2022.01.01-2022.01.02 为相差1天
-     */
-    public static int getDays(LocalDateTime begin, LocalDateTime end) {
-        return (int) Duration.between(begin, end).toDays();
     }
 
     public static LocalDate getMonday(LocalDate date) {
