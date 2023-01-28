@@ -125,12 +125,12 @@
         <module>xiaohe66-common-api</module>
         <module>xiaohe66-common-base</module>
         <module>xiaohe66-common-email</module>
-        <module>xiaohe66-common-image</module>
-        <module>xiaohe66-common-ppt</module>
-        <module>xiaohe66-common-table</module>
+        <!--<module>xiaohe66-common-image</module>-->
+        <!--<module>xiaohe66-common-ppt</module>-->
+        <!--<module>xiaohe66-common-table</module>-->
         <module>xiaohe66-common-web-boot-starter</module>
         <module>xiaohe66-common-gen</module>
-        <module>xiaohe66-commons-log</module>
+        <!--<module>xiaohe66-commons-log</module>-->
     </modules>
 
     <dependencyManagement>
