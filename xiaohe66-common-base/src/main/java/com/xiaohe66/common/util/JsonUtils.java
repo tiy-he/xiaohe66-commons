@@ -1,5 +1,6 @@
 package com.xiaohe66.common.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
@@ -53,6 +54,9 @@ public class JsonUtils {
 
         // 如果是空对象的时候,不抛异常
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+        // 序列化时忽略null
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         SimpleModule module = new SimpleModule();
 

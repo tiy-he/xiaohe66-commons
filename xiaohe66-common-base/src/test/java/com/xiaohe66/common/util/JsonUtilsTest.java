@@ -12,7 +12,9 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,6 +52,20 @@ public class JsonUtilsTest {
         String listJson = JsonUtils.toString(list);
 
         assertEquals(list, JsonUtils.formatListObject(listJson, User.class));
+
+    }
+
+    @Test
+    public void test2() {
+
+        Object[] objects = {"1", "", "3"};
+
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("list",objects);
+        map.put("xxx",null);
+
+        System.out.println(JsonUtils.toString(map));
 
     }
 
